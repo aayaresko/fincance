@@ -2,4 +2,17 @@
 
 {% block title %}My cool blog posts{% endblock %}
 
-{% block body %}Demo{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-12">
+            {% for rate in rates %}
+                <div class="alert alert-success">
+                    {{ rate.saleValue }}
+                    {{ rate.buyValue }}
+                    {{ rate.currency.code }}
+                    Fetched: {{ rate.createdAt|date('Y-m-d') }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
