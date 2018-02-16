@@ -17,12 +17,13 @@ class CurrencyContainer
     public function __construct($data = null)
     {
         if ($data instanceof \stdClass) {
-            $this->code      = $data->currency;
             $this->saleValue = $data->ask;
             $this->buyValue  = $data->bid;
         }
         if (is_array($data)) {
-            $this->code = $data['currency'];
+            if (isset($data['code'])) {
+                $this->code = $data['code'];
+            }
             if (isset($data['name'])) {
                 $this->name = $data['name'];
             }

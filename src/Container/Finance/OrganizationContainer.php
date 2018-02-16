@@ -41,8 +41,8 @@ class OrganizationContainer
             $this->phone   = $data->phone;
             $this->address = $data->address;
             $this->link    = $data->link;
-            $this->setType($data->type);
-            $this->setCurrencies($data->currencies);
+            $this->setType($data->orgType);
+            $this->setCurrencies((array) $data->currencies);
         }
         if (is_array($data)) {
             $this->id      = $data['id'];
@@ -53,7 +53,7 @@ class OrganizationContainer
             $this->phone   = $data['phone'];
             $this->address = $data['address'];
             $this->link    = $data['link'];
-            $this->setType($data['type']);
+            $this->setType($data['orgType']);
             $this->setCurrencies($data['currencies']);
         }
     }
@@ -81,8 +81,10 @@ class OrganizationContainer
      */
     public function setCurrencies(array $currencies)
     {
-        foreach ($currencies as $currency) {
-            $this->currencies = new CurrencyContainer($currency);
+        foreach ($currencies as $index => $currency) {
+            $currency           = new CurrencyContainer($currency);
+            $currency->code     = $index;
+            $this->currencies[] = $currency;
         }
     }
 
