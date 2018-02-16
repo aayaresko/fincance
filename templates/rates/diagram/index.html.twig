@@ -1,8 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}My cool blog posts{% endblock %}
+{% block title %}{{ currency.name }}{% endblock %}
 
 {% block body %}
+    <div class="row">
+        <div class="col-12">
+            <h1>{{ currency.name|capitalize }}</h1>
+        </div>
+    </div>
     <div class="row">
         <div class="col-12">
             {% for rate in rates %}
@@ -13,6 +18,11 @@
                     Fetched: {{ rate.createdAt|date('Y-m-d') }}
                 </div>
             {% endfor %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <a href="{{ path('currency') }}" title="Back to currencies list" class="btn btn-primary">Back to currencies list</a>
         </div>
     </div>
 {% endblock %}
