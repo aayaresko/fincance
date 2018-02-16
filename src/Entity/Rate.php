@@ -19,7 +19,11 @@ class Rate
     /**
      * @ORM\Column(type="decimal", precision=8, scale=4, nullable=false)
      */
-    private $value;
+    private $buyValue;
+    /**
+     * @ORM\Column(type="decimal", precision=8, scale=4, nullable=false)
+     */
+    private $saleValue;
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Currency", inversedBy="rates")
      * @ORM\JoinColumn(nullable=false)
@@ -42,17 +46,33 @@ class Rate
     /**
      * @return mixed
      */
-    public function getValue()
+    public function getBuyValue()
     {
-        return $this->value;
+        return $this->buyValue;
     }
 
     /**
-     * @param mixed $value
+     * @param mixed $buyValue
      */
-    public function setValue($value)
+    public function setBuyValue($buyValue)
     {
-        $this->value = $value;
+        $this->buyValue = $buyValue;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSaleValue()
+    {
+        return $this->saleValue;
+    }
+
+    /**
+     * @param mixed $saleValue
+     */
+    public function setSaleValue($saleValue)
+    {
+        $this->saleValue = $saleValue;
     }
 
     /**
