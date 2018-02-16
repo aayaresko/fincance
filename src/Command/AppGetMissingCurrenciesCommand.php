@@ -46,11 +46,11 @@ class AppGetMissingCurrenciesCommand extends ContainerAwareCommand
         $data        = $service->getAvailableCurrencies();
         foreach ($data as $item) {
             /** @var CurrencyContainer $item */
-            $entity = new Currency();
-            $entity->setName($item->name);
-            $entity->setCode($item->code);
-            if (!in_array($entity->getCode(), $codes)) {
-                $io->writeln(sprintf('New currency will be added with code %s.', $entity->getCode()));
+            if (!in_array($item->code, $codes)) {
+                $entity = new Currency();
+                $entity->setName($item->name);
+                $entity->setCode($item->code);
+                $io->writeln(sprintf('New currency will be added with code %s.', $item->code));
                 $flushNeeded = true;
                 $em->persist($entity);
             }
