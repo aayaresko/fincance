@@ -5,4 +5,4 @@ stof_doctrine_extensions:
     orm:
         default:
             tree: true
-            timestampable: false # not needed: listeners are not enabled by default
+            timestampable: true # not needed: listeners are not enabled by default
