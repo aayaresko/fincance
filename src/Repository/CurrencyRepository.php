@@ -13,6 +13,19 @@ class CurrencyRepository extends ServiceEntityRepository
         parent::__construct($registry, Currency::class);
     }
 
+    /**
+     * @param string $indexBy
+     * @return mixed
+     */
+    public function findAllIndexedBy($indexBy = 'id')
+    {
+        return $this->createQueryBuilder('currency')
+            ->select('c')
+            ->from(Currency::class, 'c', 'c.' . $indexBy)
+            ->getQuery()
+            ->execute();
+    }
+
     /*
     public function findBySomething($value)
     {
