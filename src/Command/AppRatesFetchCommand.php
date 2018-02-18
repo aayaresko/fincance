@@ -77,30 +77,17 @@ class AppRatesFetchCommand extends ContainerAwareCommand
         );
         $flushNeeded   = false;
         $rates         = $service->getRates();
-        foreach ($rates as $organizationIdentifier => $item) {
-            /** @var CurrencyContainer $item */
-            if (!isset($organizations[$organizationIdentifier])) {
+        foreach ($rates as $currentIdentifier => $rate) {
+            /** @var CurrencyContainer $rate */
+            if (!isset($organizations[$currentIdentifier])) {
                 $io->writeln(
-                    sprintf('Organization with external identifier %s does not exist!', $organizationIdentifier)
+                    sprintf('Organization with external identifier %s does not exist!', $currentIdentifier)
                 );
                 continue;
             }
-            if (in_array($item->code, $codes)) {
-                $io->writeln(
-                    sprintf(
-                        'New rate will be added: sale %s, by %s, currency %s',
-                        $item->saleValue,
-                        $item->buyValue,
-                        $item->code
-                    )
-                );
-                $entity = new Rate();
-                $entity->setBuyValue($item->buyValue);
-                $entity->setSaleValue($item->saleValue);
-                $currency     = $currencies[$item->code];
-                $organization = $organizations[$organizationIdentifier];
-                $entity->setCurrency($currency);
-                $entity->setOrganization($organization);
+            $organization = $organizations[$currentIdentifier];
+            $entity       = $this->createCurrencyIfNotExist($io, $rate, $organization, $codes, $currencies);
+            if ($entity) {
                 $flushNeeded = true;
                 $em->persist($entity);
             }
@@ -112,5 +99,56 @@ class AppRatesFetchCommand extends ContainerAwareCommand
             $io->writeln('Nothing to do...');
         }
         $io->writeln('Done.');
+    }
+
+    private function createCurrencyIfNotExist(
+        SymfonyStyle $io,
+        CurrencyContainer $rate,
+        Organization $organization,
+        $codes,
+        $currencies
+    ) {
+        if (in_array($rate->code, $codes)) {
+            $currentRates = $organization->getRates();
+            foreach ($currentRates as $currentRate) {
+                /** @var Rate $currentRate */
+                $today           = new \DateTime('today midnight');
+                $todayString     = $today->format('Y-m-d');
+                $currencyCode    = $currentRate->getCurrency()->getCode();
+                $createdAtString = $currentRate->getCreatedAt()->format('Y-m-d');
+                if (
+                    $rate->saleValue === $currentRate->getSaleValue() &&
+                    $rate->buyValue === $currentRate->getBuyValue() &&
+                    $rate->code === $currencyCode &&
+                    $todayString === $createdAtString
+                ) {
+                    $io->writeln(
+                        sprintf(
+                            'Duplicated rate: sale %s, by %s, currency %s',
+                            $rate->saleValue,
+                            $rate->buyValue,
+                            $rate->code
+                        )
+                    );
+                    return null;
+                }
+            }
+            $io->writeln(
+                sprintf(
+                    'New rate will be added: sale %s, by %s, currency %s',
+                    $rate->saleValue,
+                    $rate->buyValue,
+                    $rate->code
+                )
+            );
+            $entity = new Rate();
+            $entity->setBuyValue($rate->buyValue);
+            $entity->setSaleValue($rate->saleValue);
+            $currency = $currencies[$rate->code];
+            $entity->setCurrency($currency);
+            $entity->setOrganization($organization);
+
+            return $entity;
+        }
     }
 }
