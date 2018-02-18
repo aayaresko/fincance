@@ -26,7 +26,7 @@ class AppGetMissingCurrenciesCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
-        $io->comment('Fetching new currencies.');
+        $io->comment('Fetching currencies.');
         /**
          * @var EntityManager $em
          * @var FinanceService $service
@@ -35,12 +35,12 @@ class AppGetMissingCurrenciesCommand extends ContainerAwareCommand
         $em                 = $this->getContainer()->get('doctrine.orm.entity_manager');
         $service            = $this->getContainer()->get(FinanceService::class);
         $currencyRepository = $em->getRepository(Currency::class);
-        $currentEntities    = $currencyRepository->findAll();
+        $currencies         = $currencyRepository->findAll();
         $codes              = array_map(
             function (Currency $currency) {
                 return $currency->getCode();
             },
-            $currentEntities
+            $currencies
         );
         $flushNeeded = false;
         $data        = $service->getAvailableCurrencies();
@@ -58,6 +58,8 @@ class AppGetMissingCurrenciesCommand extends ContainerAwareCommand
         if ($flushNeeded) {
             $io->writeln('Persisting data.');
             $em->flush();
+        } else {
+            $io->writeln('Nothing to do...');
         }
         $io->writeln('Done.');
     }
