@@ -38,7 +38,7 @@ class Organization
      */
     private $url;
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Rate", inversedBy="organization")
+     * @ORM\OneToMany(targetEntity="App\Entity\Rate", mappedBy="organization")
      * @ORM\JoinColumn(nullable=false)
      */
     private $rates;
