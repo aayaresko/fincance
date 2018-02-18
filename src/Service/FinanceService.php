@@ -50,6 +50,22 @@ class FinanceService
     /**
      * @return array
      */
+    public function getAvailableOrganizations()
+    {
+        $response      = $this->processRequest(self::PATH_RATES, 'GET');
+        $body          = json_decode($response->getBody());
+        $organizations = $body->organizations;
+        $data          = [];
+        foreach ($organizations as $index => $item) {
+            $data[] = new OrganizationContainer($item);
+        }
+
+        return $data;
+    }
+
+    /**
+     * @return array
+     */
     public function getAvailableCurrencies()
     {
         $response      = $this->processRequest(self::PATH_RATES, 'GET');
