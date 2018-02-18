@@ -27,3 +27,5 @@ services:
     # please note that last definitions always *replace* previous ones
     App\Service\FinanceService:
         public: true
+    App\Service\OrganizationService:
+        public: true
