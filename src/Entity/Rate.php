@@ -30,6 +30,11 @@ class Rate
      */
     private $currency;
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Organization", inversedBy="rates")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $organization;
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
@@ -89,6 +94,22 @@ class Rate
     public function setCurrency(Currency $currency)
     {
         $this->currency = $currency;
+    }
+
+    /**
+     * @return Organization
+     */
+    public function getOrganization()
+    {
+        return $this->organization;
+    }
+
+    /**
+     * @param Organization $organization
+     */
+    public function setOrganization(Organization $organization)
+    {
+        $this->organization = $organization;
     }
 
     /**
