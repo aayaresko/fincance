@@ -2,11 +2,10 @@
 
 namespace App\Container\Finance;
 
+use App\Service\OrganizationService;
+
 class OrganizationContainer
 {
-    const ORGANIZATION_TYPE_BANK = 1;
-    const ORGANIZATION_TYPE_EXCHANGER = 2;
-
     public $id;
     public $oldId;
     public $branch;
@@ -63,7 +62,7 @@ class OrganizationContainer
      */
     public function setType($type)
     {
-        if ($type === self::ORGANIZATION_TYPE_BANK || $type === self::ORGANIZATION_TYPE_EXCHANGER) {
+        if ($type === OrganizationService::TYPE_BANK || $type === OrganizationService::TYPE_EXCHANGER) {
             $this->type = $type;
         }
     }

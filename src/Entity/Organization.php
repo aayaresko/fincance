@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Service\OrganizationService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -99,11 +100,13 @@ class Organization
     }
 
     /**
-     * @param mixed $type
+     * @param $type
      */
     public function setType($type)
     {
-        $this->type = $type;
+        if ($type === OrganizationService::TYPE_BANK || $type === OrganizationService::TYPE_EXCHANGER) {
+            $this->type = $type;
+        }
     }
 
     /**
