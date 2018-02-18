@@ -20,10 +20,6 @@ class Organization
     /**
      * @ORM\Column(type="string", length=100)
      */
-    private $branch;
-    /**
-     * @ORM\Column(type="string", length=100)
-     */
     private $title;
     /**
      * @ORM\Column(type="smallint")
@@ -37,6 +33,14 @@ class Organization
      * @ORM\Column(type="string", length=255)
      */
     private $url;
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $externalIdentifier;
+    /**
+     * @ORM\Column(type="string", length=100, nullable=true)
+     */
+    private $branch;
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Rate", mappedBy="organization")
      * @ORM\JoinColumn(nullable=false)
@@ -57,22 +61,6 @@ class Organization
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getBranch()
-    {
-        return $this->branch;
-    }
-
-    /**
-     * @param mixed $branch
-     */
-    public function setBranch($branch)
-    {
-        $this->branch = $branch;
     }
 
     /**
@@ -139,6 +127,38 @@ class Organization
     public function setUrl($url)
     {
         $this->url = $url;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getExternalIdentifier()
+    {
+        return $this->externalIdentifier;
+    }
+
+    /**
+     * @param mixed $externalIdentifier
+     */
+    public function setExternalIdentifier($externalIdentifier)
+    {
+        $this->externalIdentifier = $externalIdentifier;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBranch()
+    {
+        return $this->branch;
+    }
+
+    /**
+     * @param mixed $branch
+     */
+    public function setBranch($branch)
+    {
+        $this->branch = $branch;
     }
 
     /**
