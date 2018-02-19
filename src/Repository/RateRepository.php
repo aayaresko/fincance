@@ -13,6 +13,24 @@ class RateRepository extends ServiceEntityRepository
         parent::__construct($registry, Rate::class);
     }
 
+    /**
+     * @param mixed $currency
+     * @param string $attribute
+     * @return Rate|null
+     */
+    public function getLowestByCurrency($currency, $attribute)
+    {
+        return $this
+            ->createQueryBuilder('r')
+            ->where('r.currency = :currency')
+            ->setParameter('currency', $currency)
+            ->orderBy('r.' . $attribute, 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
+
     /*
     public function findBySomething($value)
     {
