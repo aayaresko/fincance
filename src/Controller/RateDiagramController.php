@@ -65,7 +65,7 @@ class RateDiagramController extends Controller
         }
 
         return $this->render(
-            'rates/diagram/index.html.twig',
+            'rate/diagram/index.html.twig',
             [
                 'chartLabel' => $chartLabel,
                 'labels'     => $chartJsService->prepareItems($labels),
