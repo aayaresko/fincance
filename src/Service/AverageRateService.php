@@ -3,8 +3,9 @@
 namespace App\Service;
 
 use App\Entity\AverageRate;
-use App\Entity\Rate;
+use App\Entity\Currency;
 use App\Repository\AverageRateRepository;
+use App\Repository\RateRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class AverageRateService
@@ -17,6 +18,10 @@ class AverageRateService
      */
     private $entityManager;
     /**
+     * @var RateRepository
+     */
+    private $rateRepository;
+    /**
      * @var AverageRateRepository
      */
     private $averageRateRepository;
@@ -25,33 +30,44 @@ class AverageRateService
      * AverageRateService constructor.
      *
      * @param EntityManagerInterface $entityManager
+     * @param RateRepository $rateRepository
      * @param AverageRateRepository $averageRateRepository
      */
-    public function __construct(EntityManagerInterface $entityManager, AverageRateRepository $averageRateRepository)
-    {
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        RateRepository $rateRepository,
+        AverageRateRepository $averageRateRepository
+    ) {
         $this->entityManager         = $entityManager;
+        $this->rateRepository        = $rateRepository;
         $this->averageRateRepository = $averageRateRepository;
     }
 
     /**
-     * @param Rate $rate
+     * @param Currency $currency
      * @param string $type
      * @param bool $doFlush
      * @return mixed
      */
-    public function createFromRateIfNotExist(Rate $rate, $type, $doFlush = false)
+    public function createFromRateIfNotExist(Currency $currency, $type, $doFlush = false)
     {
         $entity = new AverageRate();
         $entity->setType($type);
-        $entity->setCurrency($rate->getCurrency());
+        $entity->setCurrency($currency);
         switch ($type) {
             case self::TYPE_SALE:
-                $entity->setValue($rate->getSaleValue());
+                $value = $this->rateRepository->getAverageSaleByCurrency($currency);
                 break;
             case self::TYPE_BUY:
-                $entity->setValue($rate->getBuyValue());
+                $value = $this->rateRepository->getAverageBuyByCurrency($currency);
                 break;
+            default:
+                $value = null;
         }
+        if (!$value) {
+            return false;
+        }
+        $entity->setValue($value);
         $duplicated = $this->averageRateRepository->findDuplicated($entity);
         if ($duplicated) {
             return false;

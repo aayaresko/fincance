@@ -15,19 +15,73 @@ class RateRepository extends ServiceEntityRepository
 
     /**
      * @param mixed $currency
-     * @param string $attribute
      * @return Rate|null
      */
-    public function getLowestByCurrency($currency, $attribute)
+    public function getLowestSaleByCurrency($currency)
+    {
+        return $this->getOrderedByCurrencyAndAttribute($currency, 'saleValue', 'ASC');
+    }
+
+    /**
+     * @param mixed $currency
+     * @return Rate|null
+     */
+    public function getHighestBuyByCurrency($currency)
+    {
+        return $this->getOrderedByCurrencyAndAttribute($currency, 'buyValue', 'DESC');
+    }
+
+    /**
+     * @param mixed $currency
+     * @param string $attribute
+     * @param string $order
+     * @return mixed
+     */
+    private function getOrderedByCurrencyAndAttribute($currency, $attribute, $order)
     {
         return $this
             ->createQueryBuilder('r')
             ->where('r.currency = :currency')
             ->setParameter('currency', $currency)
-            ->orderBy('r.' . $attribute, 'ASC')
+            ->orderBy('r.' . $attribute, $order)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()
+            ;
+    }
+
+    /**
+     * @param mixed $currency
+     * @return array
+     */
+    public function getAverageSaleByCurrency($currency)
+    {
+        return $this->getAverageByCurrency($currency, 'saleValue');
+    }
+
+    /**
+     * @param mixed $currency
+     * @return array
+     */
+    public function getAverageBuyByCurrency($currency)
+    {
+        return $this->getAverageByCurrency($currency, 'buyValue');
+    }
+
+    /**
+     * @param mixed $currency
+     * @param string $attribute
+     * @return array
+     */
+    private function getAverageByCurrency($currency, $attribute)
+    {
+        return $this
+            ->createQueryBuilder('r')
+            ->select('AVG(r.' . $attribute . ')')
+            ->where('r.currency = :currency')
+            ->setParameter('currency', $currency)
+            ->getQuery()
+            ->getSingleScalarResult()
             ;
     }
 
