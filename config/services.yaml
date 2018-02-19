@@ -33,3 +33,5 @@ services:
         public: true
     App\Service\Subscriber:
         public: true
+    App\Service\AverageRateService:
+        public: true
