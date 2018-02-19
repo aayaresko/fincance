@@ -23,7 +23,7 @@ class AppRatesFetchCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setDescription('Add a short description for your command')
+            ->setDescription('Get rates.')
             ->addArgument(
                 'currenciesIdentifiers',
                 InputArgument::IS_ARRAY | InputArgument::OPTIONAL,
