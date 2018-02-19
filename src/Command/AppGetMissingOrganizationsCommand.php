@@ -41,7 +41,7 @@ class AppGetMissingOrganizationsCommand extends ContainerAwareCommand
         $organizations          = $organizationRepository->findAll();
         $identifiers            = array_map(
             function (Organization $organization) {
-                return $organization->getId();
+                return $organization->getExternalIdentifier();
             },
             $organizations
         );
