@@ -22,7 +22,7 @@ class AverageRate
      */
     private $type;
     /**
-     * @ORM\Column(type="decimal", precision=8, scale=4, nullable=false)
+     * @ORM\Column(type="decimal", precision=16, scale=8, nullable=false)
      */
     private $value;
     /**
