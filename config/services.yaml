@@ -31,3 +31,5 @@ services:
         public: true
     App\Service\ChartJsService:
         public: true
+    App\Service\Subscriber:
+        public: true

@@ -6,6 +6,7 @@ use App\Entity\Currency;
 use App\Entity\Rate;
 use App\Repository\CurrencyRepository;
 use App\Repository\RateRepository;
+use App\Service\Subscriber;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -41,14 +42,15 @@ class AppGetLowestRateCommand extends ContainerAwareCommand
         $io->comment($message);
         /**
          * @var EntityManager $em
+         * @var Subscriber $subscriber
          * @var RateRepository $rateRepository
          * @var CurrencyRepository $currencyRepository
          */
         $em                 = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $subscriber         = $this->getContainer()->get(Subscriber::class);
+        $templating         = $this->getContainer()->get('twig');
         $rateRepository     = $em->getRepository(Rate::class);
         $currencyRepository = $em->getRepository(Currency::class);
-        $templating         = $this->getContainer()->get('twig');
-        $mailer             = $this->getContainer()->get('mailer');
         if (!empty($currenciesIdentifiers)) {
             $qb         = $currencyRepository->createQueryBuilder('c');
             $currencies = $qb
@@ -67,17 +69,23 @@ class AppGetLowestRateCommand extends ContainerAwareCommand
                 $io->writeln(
                     sprintf('The lowest rate for currency %s is %d.', $currency->getName(), $rate->getId())
                 );
-                $message = (new \Swift_Message('Lowest rate'));
-                $message
-                    ->setFrom('finance-application@disbalans.net')
-                    ->setTo('aayaresko@gmail.com')
-                    ->setBody(
+                $subscriber
+                    ->sendEmailToUsers(
+                        $subscriber->getActiveUsers(),
+                        'Lowest rate',
+                        'finance-application@disbalans.net',
                         $templating->render('email/rate/lowest.html.twig', compact('rate')),
                         'text/html'
                     );
-                $mailer->send($message);
             }
         }
+        /*exit();
+        if ($flushNeeded) {
+            $io->writeln('Persisting data.');
+            $em->flush();
+        } else {
+            $io->writeln('Nothing to do...');
+        }*/
         $io->writeln('Done.');
     }
 }
