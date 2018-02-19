@@ -10,14 +10,17 @@
     </div>
     <div class="row">
         <div class="col-12">
-            {% for rate in rates %}
-                <div class="alert alert-success">
-                    {{ rate.saleValue }}
-                    {{ rate.buyValue }}
-                    {{ rate.currency.code }}
-                    Fetched: {{ rate.createdAt|date('Y-m-d') }}
-                </div>
-            {% endfor %}
+            <canvas id="mainChart" width="400" height="400"></canvas>
+            {#{% for items in data %}
+                {% for rate in items %}
+                    <div class="alert alert-success">
+                        {{ rate.saleValue }}
+                        {{ rate.buyValue }}
+                        {{ rate.currency.code }}
+                        Fetched: {{ rate.createdAt|date('Y-m-d') }}
+                    </div>
+                {% endfor %}
+            {% endfor %}#}
         </div>
     </div>
     <div class="row">
@@ -25,4 +28,28 @@
             <a href="{{ path('currency') }}" title="Back to currencies list" class="btn btn-primary">Back to currencies list</a>
         </div>
     </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
+    <script>
+        var config = {
+            type: 'line',
+            data: {
+                labels: {{ labels|raw }},
+                datasets: {{ data|raw }}
+            },
+            options: {
+                responsive: true,
+                title:{
+                    display: true,
+                    text: '{{ chartLabel }}'
+                }
+            }
+        };
+        window.onload = function() {
+            var ctx = document.getElementById("mainChart").getContext("2d");
+            window.line = new Chart(ctx, config);
+        };
+    </script>
 {% endblock %}
