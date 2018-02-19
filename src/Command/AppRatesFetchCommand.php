@@ -86,7 +86,7 @@ class AppRatesFetchCommand extends ContainerAwareCommand
                 continue;
             }
             $organization = $organizations[$currentIdentifier];
-            $entity       = $this->createCurrencyIfNotExist($io, $rate, $organization, $codes, $currencies);
+            $entity       = $this->createRate($io, $rate, $organization, $codes, $currencies);
             if ($entity) {
                 $flushNeeded = true;
                 $em->persist($entity);
@@ -101,7 +101,7 @@ class AppRatesFetchCommand extends ContainerAwareCommand
         $io->writeln('Done.');
     }
 
-    private function createCurrencyIfNotExist(
+    private function createRate(
         SymfonyStyle $io,
         CurrencyContainer $rate,
         Organization $organization,
