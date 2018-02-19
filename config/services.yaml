@@ -29,3 +29,5 @@ services:
         public: true
     App\Service\OrganizationService:
         public: true
+    App\Service\ChartJsService:
+        public: true
