@@ -13,6 +13,19 @@ class AverageRateRepository extends ServiceEntityRepository
         parent::__construct($registry, AverageRate::class);
     }
 
+    public function findDuplicated(AverageRate $rate)
+    {
+        //TODO need to search by createdAt as well
+
+        return $this->findOneBy(
+            [
+                'value'     => $rate->getValue(),
+                'currency'  => $rate->getCurrency(),
+                //'createdAt' => ''
+            ]
+        );
+    }
+
     /*
     public function findBySomething($value)
     {
