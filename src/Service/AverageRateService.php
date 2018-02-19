@@ -43,6 +43,7 @@ class AverageRateService
     {
         $entity = new AverageRate();
         $entity->setType($type);
+        $entity->setCurrency($rate->getCurrency());
         switch ($type) {
             case self::TYPE_SALE:
                 $entity->setValue($rate->getSaleValue());
