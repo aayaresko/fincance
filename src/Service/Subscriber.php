@@ -2,36 +2,38 @@
 
 namespace App\Service;
 
-
+use App\Entity\User;
+use App\Repository\UserRepository;
 
 class Subscriber
 {
-    const USERS = [
-        'aayaresko@gmail.com',
-        //'evyaresko@gmail.com'
-    ];
-
     /**
      * @var \Swift_Mailer
      */
     private $mailer;
+    /**
+     * @var UserRepository
+     */
+    private $userRepository;
 
     /**
      * Subscriber constructor.
      *
      * @param \Swift_Mailer $mailer
+     * @param UserRepository $userRepository
      */
-    public function __construct(\Swift_Mailer $mailer)
+    public function __construct(\Swift_Mailer $mailer, UserRepository $userRepository)
     {
-        $this->mailer = $mailer;
+        $this->mailer         = $mailer;
+        $this->userRepository = $userRepository;
     }
 
     /**
-     * @return array
+     * @return User[]
      */
     public function getActiveUsers()
     {
-        return self::USERS;
+        return $this->userRepository->getActiveUsers();
     }
 
     /**
@@ -47,10 +49,14 @@ class Subscriber
         $message->setFrom($from);
         $message->setBody($template, $templateContentType);
         if (is_array($data)) {
-            foreach ($data as $item) {
-                $message->setTo($item);
+            foreach ($data as $user) {
+                /** @var User $user */
+                $message->setTo($user->getEmail());
                 $this->mailer->send($message);
             }
+        } elseif ($data instanceof User) {
+            $message->setTo($data->getEmail());
+            $this->mailer->send($message);
         } else {
             $message->setTo($data);
             $this->mailer->send($message);

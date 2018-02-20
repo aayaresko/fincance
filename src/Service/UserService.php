@@ -6,8 +6,8 @@ use App\Entity\User;
 
 class UserService
 {
-    const TYPE_ACTIVE = 1;
-    const TYPE_INACTIVE = 2;
+    const STATUS_ACTIVE = 1;
+    const STATUS_INACTIVE = 2;
 
     /**
      * @param mixed $data
@@ -17,7 +17,7 @@ class UserService
     {
         $user = $this->createUser($data);
         if ($user) {
-            $user->setStatus(self::TYPE_ACTIVE);
+            $user->setStatus(self::STATUS_ACTIVE);
         }
 
         return $user;
@@ -31,7 +31,7 @@ class UserService
     {
         $user = $this->createUser($data);
         if ($user) {
-            $user->setStatus(self::TYPE_INACTIVE);
+            $user->setStatus(self::STATUS_INACTIVE);
         }
 
         return $user;
