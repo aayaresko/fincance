@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 class CurrencyController extends Controller
 {
     /**
-     * @Route("/currency", name="currency")
+     * @Route("/currency", name="currency_index")
      */
     public function index()
     {
