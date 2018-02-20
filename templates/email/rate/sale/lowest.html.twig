@@ -1,5 +1,5 @@
 {% extends 'email/base.html.twig' %}
 {% block content %}
     <h1>Hello!</h1>
-    <p>The lowest rate for currency '{{ rate.currency.name|upper }}' is {{ rate.saleValue }}.</p>
+    <p>The lowest rate for currency <b>'{{ rate.currency.name|upper }}'</b> is {{ rate.saleValue }}.</p>
 {% endblock %}
