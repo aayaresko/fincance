@@ -4,12 +4,13 @@ namespace App\Entity;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
-class User
+class User implements UserInterface
 {
     /**
      * @ORM\Id
@@ -34,6 +35,10 @@ class User
      * @ORM\Column(type="string", length=255)
      */
     private $password;
+    /**
+     * @var string
+     */
+    private $plainPassword;
     /**
      * @ORM\Column(type="smallint")
      */
@@ -69,6 +74,14 @@ class User
     }
 
     /**
+     * @return string
+     */
+    public function getUsername()
+    {
+        return $this->getName();
+    }
+
+    /**
      * @return mixed
      */
     public function getEmail()
@@ -101,6 +114,30 @@ class User
     }
 
     /**
+     * @return string
+     */
+    public function getPlainPassword()
+    {
+        return $this->plainPassword;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSalt()
+    {
+        return '';
+    }
+
+    /**
+     * @return array
+     */
+    public function getRoles()
+    {
+        return [];
+    }
+
+    /**
      * @return mixed
      */
     public function getStatus()
@@ -130,5 +167,10 @@ class User
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
+    }
+
+    public function eraseCredentials()
+    {
+        $this->plainPassword = null;
     }
 }

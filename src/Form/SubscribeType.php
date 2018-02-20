@@ -21,7 +21,7 @@ class SubscribeType extends AbstractType
                 EmailType::class
             )
             ->add(
-                'password',
+                'plainPassword',
                 RepeatedType::class,
                 [
                     'type'           => PasswordType::class,
