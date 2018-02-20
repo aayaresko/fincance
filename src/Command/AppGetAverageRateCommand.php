@@ -15,9 +15,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class AppGetLowestRateCommand extends ContainerAwareCommand
+class AppGetAverageRateCommand extends ContainerAwareCommand
 {
-    protected static $defaultName = 'app:rates:get-lowest';
+    protected static $defaultName = 'app:rates:get-average';
 
     protected function configure()
     {
@@ -67,16 +67,16 @@ class AppGetLowestRateCommand extends ContainerAwareCommand
             /** @var Currency $currency */
             $averageRate = $averageRateService->createFromRateIfNotExist($currency, AverageRateService::TYPE_SALE);
             if ($averageRate) {
+                $rate = $rateRepository->getLowestSaleByCurrency($currency);
+                $this->sendEmail($io, 'email/rate/sale/lowest.html.twig', $rate);
                 $created++;
             }
             $averageRate = $averageRateService->createFromRateIfNotExist($currency, AverageRateService::TYPE_BUY);
             if ($averageRate) {
+                $rate = $rateRepository->getHighestBuyByCurrency($currency);
+                $this->sendEmail($io, 'email/rate/buy/highest.html.twig', $rate);
                 $created++;
             }
-            $rate = $rateRepository->getLowestSaleByCurrency($currency);
-            $this->sendEmail($io, 'email/rate/sale/lowest.html.twig', $rate);
-            $rate = $rateRepository->getHighestBuyByCurrency($currency);
-            $this->sendEmail($io, 'email/rate/buy/highest.html.twig', $rate);
         }
         if ($created) {
             $io->writeln([
