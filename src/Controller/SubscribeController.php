@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\SubscribeType;
+use App\Service\UserService;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -21,22 +22,26 @@ class SubscribeController extends Controller
     {
         /**
          * @var EntityManager $em
+         * @var UserService $userService
          */
-        $em   = $this->get('doctrine.orm.entity_manager');
-        $user = new User();
-        $form = $this->createForm(SubscribeType::class, $user);
+        $em          = $this->get('doctrine.orm.entity_manager');
+        $userService = $this->get(UserService::class);
+        $user        = new User();
+        $form        = $this->createForm(SubscribeType::class, $user);
         $form->add('submit', SubmitType::class, ['label' => 'Subscribe']);
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
             if ($form->isValid()) {
                 /** @var User $data */
                 $data = $form->getData();
-                $user->setName($data->getName());
-                $user->setEmail($data->getEmail());
-                $user->setPassword($data->getPassword());
-                $em->persist($user);
-                $em->flush();
-                $this->addFlash('success', 'User created successfully!');
+                $user = $userService->createActiveUser($data);
+                if ($user) {
+                    $em->persist($user);
+                    $em->flush();
+                    $this->addFlash('success', 'User created successfully!');
+                } else {
+                    $this->addFlash('error', 'Something went wrong!');
+                }
 
                 return $this->redirectToRoute('subscribe_new');
             }

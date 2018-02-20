@@ -49,15 +49,15 @@ class UserService
         $password = '';
         $hasData = false;
         if ($data instanceof User) {
-            $hasData = true;
-            $name = $data->getName();
-            $email = $data->getEmail();
-            $password = $this->encryptPassword($data->getPassword());
+            $hasData  = true;
+            $name     = $data->getName();
+            $email    = $data->getEmail();
+            $password = $data->getPassword();
         } elseif (is_array($data)) {
-            $hasData = true;
-            $name = $data['name'];
-            $email = $data['email'];
-            $password = $this->encryptPassword($data['password']);
+            $hasData  = true;
+            $name     = $data['name'];
+            $email    = $data['email'];
+            $password = $data['password'];
         }
         if (!$hasData) {
             return false;
@@ -67,14 +67,5 @@ class UserService
         $user->setPassword($password);
 
         return $user;
-    }
-
-    /**
-     * @param string $password
-     * @return mixed
-     */
-    public function encryptPassword($password)
-    {
-        return $password;
     }
 }
