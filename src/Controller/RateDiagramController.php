@@ -9,6 +9,7 @@ use App\Repository\CurrencyRepository;
 use App\Repository\OrganizationRepository;
 use App\Repository\RateRepository;
 use App\Service\ChartJsService;
+use App\Service\OrganizationService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -17,10 +18,10 @@ use Symfony\Component\HttpFoundation\Response;
 class RateDiagramController extends Controller
 {
     /**
-     * @Route("/rate/diagram/{currencyId}", name="rate_diagram")
+     * @Route("/rate/diagram/{currencyId}/{organizationType}", name="rate_diagram")
      * @Method("GET")
      */
-    public function index($currencyId)
+    public function index($currencyId, $organizationType = OrganizationService::TYPE_BANK)
     {
         /**
          * @var ChartJsService $chartJsService
@@ -33,7 +34,7 @@ class RateDiagramController extends Controller
         $ratesRepository        = $this->getDoctrine()->getRepository(Rate::class);
         $organizationRepository = $this->getDoctrine()->getRepository(Organization::class);
         $currency               = $currencyRepository->find($currencyId);
-        $organizations          = $organizationRepository->findAll();
+        $organizations          = $organizationRepository->findByType($organizationType);
         if (!$currency) {
             throw $this->createNotFoundException();
         }
