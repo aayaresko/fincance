@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
-class User implements UserInterface
+class User implements UserInterface, \Serializable
 {
     /**
      * @ORM\Id
@@ -30,13 +30,12 @@ class User implements UserInterface
      */
     private $email;
     /**
-     * @Assert\NotBlank()
-     * @Assert\Length(min="6")
      * @ORM\Column(type="string", length=255)
      */
     private $password;
     /**
-     * @var string
+     * @Assert\NotBlank()
+     * @Assert\Length(min="6")
      */
     private $plainPassword;
     /**
@@ -122,6 +121,14 @@ class User implements UserInterface
     }
 
     /**
+     * @param string $plainPassword
+     */
+    public function setPlainPassword($plainPassword)
+    {
+        $this->plainPassword = $plainPassword;
+    }
+
+    /**
      * @return string
      */
     public function getSalt()
@@ -172,5 +179,33 @@ class User implements UserInterface
     public function eraseCredentials()
     {
         $this->plainPassword = null;
+    }
+
+    /**
+     * @see \Serializable::serialize()
+     */
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id,
+            $this->name,
+            $this->password,
+            // see section on salt below
+            // $this->salt,
+        ));
+    }
+
+    /**
+     * @see \Serializable::unserialize()
+     */
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->name,
+            $this->password,
+            // see section on salt below
+            // $this->salt
+            ) = unserialize($serialized);
     }
 }

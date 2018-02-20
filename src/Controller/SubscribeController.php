@@ -50,7 +50,6 @@ class SubscribeController extends Controller
         return $this->render(
             'subscribe/new.html.twig',
             [
-                'user' => $user,
                 'form' => $form->createView(),
             ]
         );
