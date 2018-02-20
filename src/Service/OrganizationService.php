@@ -30,7 +30,7 @@ class OrganizationService
      * @param mixed $data
      * @param int $type
      * @param bool $doFlush
-     * @return Organization|null
+     * @return Organization|bool
      */
     public function create($data, $type = self::TYPE_BANK, $doFlush = false)
     {
@@ -55,22 +55,21 @@ class OrganizationService
             $url        = $data->link;
             $externalId = $data->id;
         }
-        if ($isValid) {
-            $entity = new Organization();
-            $entity->setType($type);
-            $entity->setTitle($title);
-            $entity->setUrl($url);
-            $entity->setExternalIdentifier($externalId);
-            $entity->setBranch($branch);
-            $entity->setAddress($address);
-            $this->entityManager->persist($entity);
-            if ($doFlush) {
-                $this->entityManager->flush();
-            }
-
-            return $entity;
+        if (!$isValid) {
+            return false;
+        }
+        $entity = new Organization();
+        $entity->setType($type);
+        $entity->setTitle($title);
+        $entity->setUrl($url);
+        $entity->setExternalIdentifier($externalId);
+        $entity->setBranch($branch);
+        $entity->setAddress($address);
+        $this->entityManager->persist($entity);
+        if ($doFlush) {
+            $this->entityManager->flush();
         }
 
-        return null;
+        return $entity;
     }
 }

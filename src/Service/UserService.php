@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserService
@@ -11,6 +12,10 @@ class UserService
     const STATUS_INACTIVE = 2;
 
     /**
+     * @var EntityManagerInterface;
+     */
+    private $entityManager;
+    /**
      * @var UserPasswordEncoderInterface
      */
     private $encoder;
@@ -18,11 +23,13 @@ class UserService
     /**
      * UserService constructor.
      *
+     * @param EntityManagerInterface $entityManager
      * @param UserPasswordEncoderInterface $encoder
      */
-    public function __construct(UserPasswordEncoderInterface $encoder)
+    public function __construct(EntityManagerInterface $entityManager, UserPasswordEncoderInterface $encoder)
     {
-        $this->encoder = $encoder;
+        $this->entityManager = $entityManager;
+        $this->encoder       = $encoder;
     }
 
     /**
@@ -55,11 +62,12 @@ class UserService
 
     /**
      * @param mixed $data
+     * @param bool $doFlush
      * @return User|bool
      */
-    public function createUser($data)
+    public function createUser($data, $doFlush = false)
     {
-        $user          = new User();
+        $entity        = new User();
         $name          = '';
         $email         = '';
         $plainPassword = '';
@@ -78,12 +86,16 @@ class UserService
         if (!$hasData) {
             return false;
         }
-        $user->setName($name);
-        $user->setEmail($email);
-        $user->setPlainPassword($plainPassword);
-        $password = $this->encoder->encodePassword($user, $plainPassword);
-        $user->setPassword($password);
+        $entity->setName($name);
+        $entity->setEmail($email);
+        $entity->setPlainPassword($plainPassword);
+        $password = $this->encoder->encodePassword($entity, $plainPassword);
+        $entity->setPassword($password);
+        $this->entityManager->persist($entity);
+        if ($doFlush) {
+            $this->entityManager->flush();
+        }
 
-        return $user;
+        return $entity;
     }
 }
