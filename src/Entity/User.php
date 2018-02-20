@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -17,14 +18,19 @@ class User
      */
     private $id;
     /**
+     * @Assert\NotBlank()
      * @ORM\Column(type="string", length=255)
      */
     private $name;
     /**
+     * @Assert\Email()
+     * @Assert\NotBlank()
      * @ORM\Column(type="string", length=255)
      */
     private $email;
     /**
+     * @Assert\NotBlank()
+     * @Assert\Length(min="6")
      * @ORM\Column(type="string", length=255)
      */
     private $password;
