@@ -1,4 +1,5 @@
-Hello!
-The lowest rate for currency '{{ rate.currency.name|upper }}' is {{ rate.saleValue }}.
-
-Regards, finance-app.
+{% extends 'base.html.twig' %}
+{% block content %}
+    <h1>Hello!</h1>
+    <p>The lowest rate for currency '{{ rate.currency.name|upper }}' is {{ rate.saleValue }}.</p>
+{% endblock %}
