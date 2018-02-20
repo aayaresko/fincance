@@ -17,31 +17,31 @@ class User implements UserInterface, \Serializable
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private $id = 0;
     /**
      * @Assert\NotBlank()
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    private $name = '';
     /**
      * @Assert\Email()
      * @Assert\NotBlank()
      * @ORM\Column(type="string", length=255)
      */
-    private $email;
+    private $email = '';
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $password;
+    private $password = '';
     /**
      * @Assert\NotBlank()
      * @Assert\Length(min="6")
      */
-    private $plainPassword;
+    private $plainPassword = '';
     /**
      * @ORM\Column(type="smallint")
      */
-    private $status;
+    private $status = 0;
     /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
@@ -49,9 +49,9 @@ class User implements UserInterface, \Serializable
     private $createdAt;
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -59,7 +59,7 @@ class User implements UserInterface, \Serializable
     /**
      * @return mixed
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -67,7 +67,7 @@ class User implements UserInterface, \Serializable
     /**
      * @param mixed $name
      */
-    public function setName($name)
+    public function setName(string $name)
     {
         $this->name = $name;
     }
@@ -75,7 +75,7 @@ class User implements UserInterface, \Serializable
     /**
      * @return string
      */
-    public function getUsername()
+    public function getUsername(): string
     {
         return $this->getName();
     }
@@ -83,7 +83,7 @@ class User implements UserInterface, \Serializable
     /**
      * @return mixed
      */
-    public function getEmail()
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -91,7 +91,7 @@ class User implements UserInterface, \Serializable
     /**
      * @param mixed $email
      */
-    public function setEmail($email)
+    public function setEmail(string $email)
     {
         $this->email = $email;
     }
@@ -99,7 +99,7 @@ class User implements UserInterface, \Serializable
     /**
      * @return mixed
      */
-    public function getPassword()
+    public function getPassword(): string
     {
         return $this->password;
     }
@@ -107,7 +107,7 @@ class User implements UserInterface, \Serializable
     /**
      * @param mixed $password
      */
-    public function setPassword($password)
+    public function setPassword(string $password)
     {
         $this->password = $password;
     }
@@ -115,7 +115,7 @@ class User implements UserInterface, \Serializable
     /**
      * @return string
      */
-    public function getPlainPassword()
+    public function getPlainPassword(): string
     {
         return $this->plainPassword;
     }
@@ -123,7 +123,7 @@ class User implements UserInterface, \Serializable
     /**
      * @param string $plainPassword
      */
-    public function setPlainPassword($plainPassword)
+    public function setPlainPassword(string $plainPassword)
     {
         $this->plainPassword = $plainPassword;
     }
@@ -131,7 +131,7 @@ class User implements UserInterface, \Serializable
     /**
      * @return string
      */
-    public function getSalt()
+    public function getSalt(): string
     {
         return '';
     }
@@ -139,7 +139,7 @@ class User implements UserInterface, \Serializable
     /**
      * @return array
      */
-    public function getRoles()
+    public function getRoles(): array
     {
         return [];
     }
@@ -147,7 +147,7 @@ class User implements UserInterface, \Serializable
     /**
      * @return mixed
      */
-    public function getStatus()
+    public function getStatus(): int
     {
         return $this->status;
     }
@@ -155,7 +155,7 @@ class User implements UserInterface, \Serializable
     /**
      * @param mixed $status
      */
-    public function setStatus($status)
+    public function setStatus(int $status)
     {
         $this->status = $status;
     }
@@ -186,13 +186,13 @@ class User implements UserInterface, \Serializable
      */
     public function serialize()
     {
-        return serialize(array(
+        return serialize([
             $this->id,
             $this->name,
             $this->password,
             // see section on salt below
             // $this->salt,
-        ));
+        ]);
     }
 
     /**

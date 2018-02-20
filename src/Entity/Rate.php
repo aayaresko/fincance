@@ -15,15 +15,15 @@ class Rate
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private $id = 0;
     /**
      * @ORM\Column(type="decimal", precision=8, scale=4, nullable=false)
      */
-    private $buyValue;
+    private $buyValue = 0.00;
     /**
      * @ORM\Column(type="decimal", precision=8, scale=4, nullable=false)
      */
-    private $saleValue;
+    private $saleValue = 0.00;
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Currency", inversedBy="rates")
      * @ORM\JoinColumn(nullable=false)
@@ -41,41 +41,41 @@ class Rate
     private $createdAt;
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
-     * @return mixed
+     * @return float
      */
-    public function getBuyValue()
+    public function getBuyValue(): float
     {
         return $this->buyValue;
     }
 
     /**
-     * @param mixed $buyValue
+     * @param float $buyValue
      */
-    public function setBuyValue($buyValue)
+    public function setBuyValue(float $buyValue)
     {
         $this->buyValue = $buyValue;
     }
 
     /**
-     * @return mixed
+     * @return float
      */
-    public function getSaleValue()
+    public function getSaleValue(): float
     {
         return $this->saleValue;
     }
 
     /**
-     * @param mixed $saleValue
+     * @param float $saleValue
      */
-    public function setSaleValue($saleValue)
+    public function setSaleValue(float $saleValue)
     {
         $this->saleValue = $saleValue;
     }

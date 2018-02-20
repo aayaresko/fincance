@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -14,53 +15,82 @@ class Currency
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private $id = 0;
     /**
      * @ORM\Column(type="string", length=100)
      */
-    private $name;
+    private $name = '';
     /**
      * @ORM\Column(type="string", length=3, options={"fixed" = true})
      */
-    private $code;
+    private $code = '';
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Rate", mappedBy="organization")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $rates;
 
     /**
-     * @return mixed
+     * Currency constructor.
      */
-    public function getId()
+    public function __construct()
+    {
+        $this->rates = new ArrayCollection();
+    }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
     /**
-     * @param mixed $name
+     * @param string $name
      */
-    public function setName($name)
+    public function setName(string $name)
     {
         $this->name = $name;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getCode()
+    public function getCode(): string
     {
         return $this->code;
     }
 
     /**
-     * @param mixed $code
+     * @param string $code
      */
-    public function setCode($code)
+    public function setCode(string $code)
     {
         $this->code = $code;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRates()
+    {
+        return $this->rates;
+    }
+
+    /**
+     * @param array $rates
+     */
+    public function setRates(array $rates)
+    {
+        $this->rates = $rates;
     }
 }

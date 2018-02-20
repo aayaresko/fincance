@@ -16,27 +16,27 @@ class Organization
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private $id = 0;
     /**
      * @ORM\Column(type="string", length=100)
      */
-    private $title;
+    private $title = '';
     /**
      * @ORM\Column(type="smallint")
      */
-    private $type;
+    private $type = 0;
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $address;
+    private $address = '';
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $url;
+    private $url = '';
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $externalIdentifier;
+    private $externalIdentifier = '';
     /**
      * @ORM\Column(type="string", length=100, nullable=true)
      */
@@ -56,41 +56,41 @@ class Organization
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
     /**
-     * @param mixed $title
+     * @param string $title
      */
-    public function setTitle($title)
+    public function setTitle(string $title)
     {
         $this->title = $title;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getType()
+    public function getType(): int
     {
         return $this->type;
     }
 
     /**
-     * @param $type
+     * @param int $type
      */
-    public function setType($type)
+    public function setType(int $type)
     {
         if ($type === OrganizationService::TYPE_BANK || $type === OrganizationService::TYPE_EXCHANGER) {
             $this->type = $type;
@@ -98,49 +98,49 @@ class Organization
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getAddress()
+    public function getAddress(): string
     {
         return $this->address;
     }
 
     /**
-     * @param mixed $address
+     * @param string $address
      */
-    public function setAddress($address)
+    public function setAddress(string $address)
     {
         $this->address = $address;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getUrl()
+    public function getUrl(): string
     {
         return $this->url;
     }
 
     /**
-     * @param mixed $url
+     * @param string $url
      */
-    public function setUrl($url)
+    public function setUrl(string $url)
     {
         $this->url = $url;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getExternalIdentifier()
+    public function getExternalIdentifier(): string
     {
         return $this->externalIdentifier;
     }
 
     /**
-     * @param mixed $externalIdentifier
+     * @param string $externalIdentifier
      */
-    public function setExternalIdentifier($externalIdentifier)
+    public function setExternalIdentifier(string $externalIdentifier)
     {
         $this->externalIdentifier = $externalIdentifier;
     }
@@ -170,9 +170,9 @@ class Organization
     }
 
     /**
-     * @param mixed $rates
+     * @param array $rates
      */
-    public function setRates($rates)
+    public function setRates(array $rates)
     {
         $this->rates = $rates;
     }

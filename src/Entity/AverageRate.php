@@ -16,15 +16,15 @@ class AverageRate
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private $id = 0;
     /**
      * @ORM\Column(type="smallint")
      */
-    private $type;
+    private $type = 0;
     /**
      * @ORM\Column(type="decimal", precision=16, scale=8, nullable=false)
      */
-    private $value;
+    private $value = 0.00;
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Currency", inversedBy="rates")
      * @ORM\JoinColumn(nullable=false)
@@ -37,25 +37,25 @@ class AverageRate
     private $createdAt;
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getType()
+    public function getType(): int
     {
         return $this->type;
     }
 
     /**
-     * @param mixed $type
+     * @param int $type
      */
-    public function setType($type)
+    public function setType(int $type)
     {
         if ($type === AverageRateService::TYPE_SALE || $type === AverageRateService::TYPE_BUY) {
             $this->type = $type;
@@ -63,17 +63,17 @@ class AverageRate
     }
 
     /**
-     * @return mixed
+     * @return float
      */
-    public function getValue()
+    public function getValue(): float
     {
         return $this->value;
     }
 
     /**
-     * @param mixed $value
+     * @param float $value
      */
-    public function setValue($value)
+    public function setValue(float $value)
     {
         $this->value = $value;
     }
