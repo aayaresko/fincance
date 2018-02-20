@@ -15,8 +15,6 @@ class AverageRateRepository extends ServiceEntityRepository
 
     public function findDuplicated(AverageRate $rate)
     {
-        //TODO need to search by createdAt as well
-
         return $this->findOneBy(
             [
                 'value'     => $rate->getValue(),
