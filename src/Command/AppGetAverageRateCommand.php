@@ -109,7 +109,7 @@ class AppGetAverageRateCommand extends ContainerAwareCommand
                 ->sendEmailToUsers(
                     $subscriber->getActiveUsers(),
                     'Lowest rate',
-                    'finance-application@disbalans.net',
+                    getenv('MAILER_USER'),
                     $templating->render($template, compact('rate')),
                     'text/html'
                 );
