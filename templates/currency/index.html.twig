@@ -24,8 +24,11 @@
                         <td>{{ entity.code }}</td>
                         <td>({{ entity.name }})</td>
                         <td>
-                            <a href="{{ path('rate_diagram', {'currencyId': entity.id}) }}" title="{{ entity.name }}" class="btn btn-primary">
-                                View
+                            <a href="{{ path('rate_diagram', {'currencyId': entity.id}) }}" title="{{ entity.name }}" class="btn btn-success">
+                                Diagram
+                            </a>
+                            <a href="{{ path('rate_index', {'currencyId': entity.id}) }}" title="{{ entity.name }}" class="btn btn-warning">
+                                Rates
                             </a>
                         </td>
                     </tr>

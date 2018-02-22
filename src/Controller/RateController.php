@@ -31,12 +31,12 @@ class RateController extends Controller
         $organizationRepository = $this->getDoctrine()->getRepository(Organization::class);
         $currency               = $currencyRepository->find($currencyId);
         if (!$currency) {
-            throw $this->createAccessDeniedException();
+            throw $this->createNotFoundException();
         }
         if ($organizationId) {
             $organization = $organizationRepository->find($organizationId);
             if (!$organization) {
-                throw $this->createAccessDeniedException();
+                throw $this->createNotFoundException();
             }
             $entities = $ratesRepository->findBy([
                 'currency'     => $currency,
