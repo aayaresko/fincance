@@ -26,6 +26,18 @@ class CurrencyRepository extends ServiceEntityRepository
             ->execute();
     }
 
+    public function findByIdentifiers(array $identifiers)
+    {
+        $qb = $this->createQueryBuilder('currency');
+
+        return $qb
+            ->where(
+                $qb->expr()->in('currency.id', $identifiers)
+            )
+            ->getQuery()
+            ->execute();
+    }
+
     /*
     public function findBySomething($value)
     {
