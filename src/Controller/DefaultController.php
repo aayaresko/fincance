@@ -27,6 +27,14 @@ class DefaultController extends Controller
         $organizationRepository = $this->getDoctrine()->getRepository(Organization::class);
         $currencies             = $currencyRepository->findAll();
         $organizations          = $organizationRepository->findAll();
+        $data                   = [];
+        foreach ($currencies as $index => $currency) {
+            /** @var Currency $currency */
+            if ($currency->getRates()->count()) {
+                $data[$index] = $currency;
+            }
+        }
+        $currencies = $data;
 
         return $this->render('index.html.twig', compact('currencies', 'organizations'));
     }

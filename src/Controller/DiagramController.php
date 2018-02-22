@@ -21,10 +21,10 @@ use Symfony\Component\HttpFoundation\Response;
 class DiagramController extends Controller
 {
     /**
-     * @Route("/rate/{currencyId}/{organizationType}", name="diagram_rate", defaults={"organizationType"=1})
+     * @Route("/rate/{currencyId}", name="diagram_rate")
      * @Method("GET")
      */
-    public function rateIndex($currencyId, $organizationType)
+    public function rateIndex($currencyId)
     {
         /**
          * @var ChartJsService $chartJsService
@@ -37,7 +37,7 @@ class DiagramController extends Controller
         $organizationRepository = $this->getDoctrine()->getRepository(Organization::class);
         $currencyRepository     = $this->getDoctrine()->getRepository(Currency::class);
         $currency               = $currencyRepository->find($currencyId);
-        $organizations          = $organizationRepository->findByType($organizationType);
+        $organizations          = $organizationRepository->findAll();
         if (!$currency) {
             throw $this->createNotFoundException();
         }
