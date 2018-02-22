@@ -11,16 +11,6 @@
     <div class="row">
         <div class="col-12">
             <canvas id="mainChart" width="400" height="400"></canvas>
-            {#{% for items in data %}
-                {% for rate in items %}
-                    <div class="alert alert-success">
-                        {{ rate.saleValue }}
-                        {{ rate.buyValue }}
-                        {{ rate.currency.code }}
-                        Fetched: {{ rate.createdAt|date('Y-m-d') }}
-                    </div>
-                {% endfor %}
-            {% endfor %}#}
         </div>
     </div>
     <div class="row">

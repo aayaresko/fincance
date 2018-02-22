@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Rates{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-12">
+            <h1>{{ currency.name|capitalize }}</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            {% if entities is empty %}
+                <p>No data found.</p>
+            {% else %}
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Sale</th>
+                        <th>Buy</th>
+                        <th>Organization</th>
+                        <th>Fetched</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for entity in entities %}
+                        <tr>
+                            <th scope="row">{{ entity.id }}</th>
+                            <td>{{ entity.saleValue }}</td>
+                            <td>{{ entity.buyValue }}</td>
+                            <td>
+                                <a href="{{ path('rate_index', {'currencyId': currency.id, 'organizationId': entity.organization.id}) }}" title="{{ entity.organization.title }}">
+                                    {{ entity.organization.title }}
+                                </a>
+                            </td>
+                            <td>{{ entity.createdAt|date('Y-m-d') }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
