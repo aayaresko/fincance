@@ -16,10 +16,10 @@ use Symfony\Component\HttpFoundation\Response;
 class RateController extends Controller
 {
     /**
-     * @Route("/rate/{currencyId}/{organizationId}", name="rate_index")
+     * @Route("/rate/{currencyId}/{organizationId}", name="rate_index", defaults={"organizationId"=null})
      * @Method("GET")
      */
-    public function index($currencyId, $organizationId = null)
+    public function index($currencyId, $organizationId)
     {
         /**
          * @var RateRepository $ratesRepository
