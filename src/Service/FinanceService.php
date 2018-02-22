@@ -39,8 +39,11 @@ class FinanceService
         $data          = [];
         foreach ($organizations as $item) {
             $organization = new OrganizationContainer($item);
+            if (!isset($data[$organization->id])) {
+                $data[$organization->id] = [];
+            }
             foreach ($organization->getCurrencies() as $currency) {
-                $data[$organization->id] = $currency;
+                $data[$organization->id][] = $currency;
             }
         }
 
