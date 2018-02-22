@@ -23,8 +23,8 @@
                         <td>{{ entity.type }}</td>
                         <td>
                             <a href="{{ entity.url }}" title="{{ entity.title }}">Source url</a>
-                            <a href="{{ path('diagram_organization', {'organizationId': entity.id, 'currencyId': 46 }) }}" title="{{ entity.title }}" class="btn btn-warning">
-                                Rates
+                            <a href="{{ path('organization_currency', {'organizationId': entity.id }) }}" title="{{ entity.title }}" class="btn btn-warning">
+                                Currencies
                             </a>
                         </td>
                     </tr>

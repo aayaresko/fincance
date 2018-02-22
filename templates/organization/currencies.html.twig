@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Currencies{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-12">
+            <h1>{{ organization.title|capitalize }}</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Code</th>
+                    <th scope="col">Rates</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for key,entity in entities %}
+                    <tr>
+                        <th scope="row">{{ 1 + key }}</th>
+                        <td>{{ entity.name }}</td>
+                        <td>{{ entity.code }}</td>
+                        <td>
+                            <a href="{{ path('diagram_organization', {'organizationId': organization.id, 'currencyId': entity.id }) }}" title="{{ entity.name }}" class="btn btn-warning">
+                                Diagram
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

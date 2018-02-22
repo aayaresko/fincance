@@ -69,7 +69,7 @@ class DiagramController extends Controller
         }
 
         return $this->render(
-            'diagram/index.html.twig',
+            'diagram/rates.html.twig',
             [
                 'chartLabel' => $chartLabel,
                 'labels'     => $chartJsService->prepareItems($labels),
@@ -124,12 +124,13 @@ class DiagramController extends Controller
         $data[] = $set;
 
         return $this->render(
-            'diagram/index.html.twig',
+            'diagram/organization.html.twig',
             [
-                'chartLabel' => $chartLabel,
-                'labels'     => $chartJsService->prepareItems($labels),
-                'data'       => json_encode($data),
-                'currency'   => $currency,
+                'organization' => $organization,
+                'chartLabel'   => $chartLabel,
+                'labels'       => $chartJsService->prepareItems($labels),
+                'data'         => json_encode($data),
+                'currency'     => $currency,
             ]
         );
     }
