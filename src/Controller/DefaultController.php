@@ -2,6 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Currency;
+use App\Entity\Organization;
+use App\Repository\CurrencyRepository;
+use App\Repository\OrganizationRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -15,6 +19,15 @@ class DefaultController extends Controller
      */
     public function index()
     {
-        return $this->redirectToRoute('currency_index');
+        /**
+         * @var CurrencyRepository $currencyRepository
+         * @var OrganizationRepository $organizationRepository
+         */
+        $currencyRepository     = $this->getDoctrine()->getRepository(Currency::class);
+        $organizationRepository = $this->getDoctrine()->getRepository(Organization::class);
+        $currencies             = $currencyRepository->findAll();
+        $organizations          = $organizationRepository->findAll();
+
+        return $this->render('index.html.twig', compact('currencies', 'organizations'));
     }
 }
