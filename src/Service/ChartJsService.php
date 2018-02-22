@@ -188,6 +188,7 @@ class ChartJsService
     public function prepareItems(array $items)
     {
         $items = array_unique($items);
+        $items = array_values($items);
 
         return json_encode($items);
     }
