@@ -77,14 +77,14 @@ class AppRatesFetchCommand extends ContainerAwareCommand
         );
         $flushNeeded   = false;
         $data          = $service->getRates();
-        foreach ($data as $currentIdentifier => $rates) {
-            if (!isset($organizations[$currentIdentifier])) {
+        foreach ($data as $identifier => $rates) {
+            if (!isset($organizations[$identifier])) {
                 $io->writeln(
-                    sprintf('Organization with external identifier %s does not exist!', $currentIdentifier)
+                    sprintf('Organization with external identifier %s does not exist!', $identifier)
                 );
                 continue;
             }
-            $organization = $organizations[$currentIdentifier];
+            $organization = $organizations[$identifier];
             foreach ($rates as $rate) {
                 /** @var CurrencyContainer $rate */
                 $entity = $this->createRate($io, $rate, $organization, $codes, $currencies);
