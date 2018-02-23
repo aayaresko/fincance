@@ -191,9 +191,9 @@ class User implements UserInterface, \Serializable
     }
 
     /**
-     * @param array $currencySubscriptions
+     * @param mixed $currencySubscriptions
      */
-    public function setCurrencySubscriptions(array $currencySubscriptions)
+    public function setCurrencySubscriptions($currencySubscriptions)
     {
         $this->currencySubscriptions = $currencySubscriptions;
     }
