@@ -65,7 +65,7 @@ class UserService
      * @param bool $doFlush
      * @return User|bool
      */
-    public function createUser($data, $doFlush = false)
+    private function createUser($data, $doFlush = false)
     {
         $entity        = new User();
         $name          = '';

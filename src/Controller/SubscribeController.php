@@ -36,7 +36,6 @@ class SubscribeController extends Controller
                 $data = $form->getData();
                 $user = $userService->createActiveUser($data);
                 if ($user) {
-                    $em->persist($user);
                     $em->flush();
                     $this->addFlash('success', 'User created successfully!');
                 } else {
