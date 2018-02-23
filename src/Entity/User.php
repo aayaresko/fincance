@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -47,6 +48,19 @@ class User implements UserInterface, \Serializable
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Subscription\CurrencySubscription", inversedBy="users")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $currencySubscriptions;
+
+    /**
+     * User constructor.
+     */
+    public function __construct()
+    {
+        $this->currencySubscriptions = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -169,11 +183,19 @@ class User implements UserInterface, \Serializable
     }
 
     /**
-     * @param mixed $createdAt
+     * @return mixed
      */
-    public function setCreatedAt($createdAt)
+    public function getCurrencySubscriptions()
     {
-        $this->createdAt = $createdAt;
+        return $this->currencySubscriptions;
+    }
+
+    /**
+     * @param array $currencySubscriptions
+     */
+    public function setCurrencySubscriptions(array $currencySubscriptions)
+    {
+        $this->currencySubscriptions = $currencySubscriptions;
     }
 
     public function eraseCredentials()
