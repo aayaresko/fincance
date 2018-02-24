@@ -17,8 +17,8 @@ class CurrencyContainer
     public function __construct($data = null)
     {
         if ($data instanceof \stdClass) {
-            $this->saleValue = $data->ask;
-            $this->buyValue  = $data->bid;
+            $this->saleValue = (double) $data->ask;
+            $this->buyValue  = (double) $data->bid;
         }
         if (is_array($data)) {
             if (isset($data['code'])) {
@@ -28,10 +28,10 @@ class CurrencyContainer
                 $this->name = $data['name'];
             }
             if (isset($data['ask'])) {
-                $this->saleValue = $data['ask'];
+                $this->saleValue = (double) $data['ask'];
             }
             if (isset($data['bid'])) {
-                $this->buyValue = $data['bid'];
+                $this->buyValue = (double) $data['bid'];
             }
         }
     }
