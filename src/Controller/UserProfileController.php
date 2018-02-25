@@ -2,10 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Subscription\CurrencySubscription;
-use App\Entity\User;
 use App\Form\UserProfileType;
-use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -21,17 +18,16 @@ class UserProfileController extends Controller
     {
         /**
          * @var EntityManager $em
-         * @var UserRepository $userRepository
          */
-        $em             = $this->get('doctrine.orm.entity_manager');
-        $userRepository = $em->getRepository(User::class);
-
-        $user = $userRepository->findOneByEmail('aayaresko@gmail.com');
+        $em   = $this->get('doctrine.orm.entity_manager');
+        $user = $this->getUser();
         $form = $this
             ->createForm(
                 UserProfileType::class,
                 $user,
-                ['selected_subscriptions' => $user->getCurrencySubscriptions()]
+                [
+                    'selected_subscriptions' => $user->getCurrencySubscriptions()
+                ]
             );
         $form->add('submit', SubmitType::class, ['label' => 'Update']);
         if ($request->isMethod('POST')) {
@@ -39,6 +35,7 @@ class UserProfileController extends Controller
             if ($form->isValid()) {
                 $em->persist($user);
                 $em->flush();
+                $this->addFlash('success', 'Your profile updated successfully!');
 
                 return $this->redirectToRoute('user_profile');
             }
