@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -12,6 +13,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class User implements UserInterface, \Serializable
 {
+    const ROLE_DEFAULT = 'ROLE_USER';
+    const ROLE_ADMIN = 'ROLE_ADMIN';
+    const ROLE_APARTMENTS_ADMIN = 'ROLE_APARTMENTS_ADMIN';
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -39,6 +44,14 @@ class User implements UserInterface, \Serializable
      */
     private $plainPassword = '';
     /**
+     * @var string
+     */
+    protected $salt = '';
+    /**
+     * @ORM\Column(type="array")
+     */
+    protected $roles = [];
+    /**
      * @ORM\Column(type="smallint")
      */
     private $status = 0;
@@ -47,6 +60,21 @@ class User implements UserInterface, \Serializable
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Subscription\CurrencySubscription", inversedBy="users")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $currencySubscriptions;
+
+    /**
+     * User constructor.
+     */
+    public function __construct()
+    {
+        $this->salt                  = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
+        $this->roles                 = [];
+        $this->currencySubscriptions = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -133,15 +161,77 @@ class User implements UserInterface, \Serializable
      */
     public function getSalt(): string
     {
-        return '';
+        return $this->salt;
     }
 
     /**
-     * @return array
+     * @param string $role
      */
-    public function getRoles(): array
+    public function addRole($role)
     {
-        return [];
+        $role = strtoupper($role);
+        if ($role === self::ROLE_DEFAULT) {
+            return;
+        }
+        if (!in_array($role, $this->roles, true)) {
+            $this->roles[] = $role;
+        }
+    }
+
+    /**
+     * @param string $role
+     */
+    public function removeRole($role)
+    {
+        if (false !== $key = array_search(strtoupper($role), $this->roles, true)) {
+            unset($this->roles[$key]);
+            $this->roles = array_values($this->roles);
+        }
+    }
+
+    /**
+     * Returns the user roles
+     *
+     * @return array The roles
+     */
+    public function getRoles()
+    {
+        $roles = $this->roles;
+        /*foreach ($this->getGroups() as $group) {
+            $roles = array_merge($roles, $group->getRoles());
+        }*/
+        // we need to make sure to have at least one role
+        $roles[] = self::ROLE_DEFAULT;
+
+        return array_unique($roles);
+    }
+
+    /**
+     * @param array $roles
+     */
+    public function setRoles(array $roles)
+    {
+        $this->roles = [];
+        foreach ($roles as $role) {
+            $this->addRole($role);
+        }
+    }
+
+    /**
+     * Never use this to check if this user has access to anything!
+     *
+     * Use the SecurityContext, or an implementation of AccessDecisionManager
+     * instead, e.g.
+     *
+     *         $securityContext->isGranted('ROLE_USER');
+     *
+     * @param string $role
+     *
+     * @return boolean
+     */
+    public function hasRole($role)
+    {
+        return in_array(strtoupper($role), $this->getRoles(), true);
     }
 
     /**
@@ -169,11 +259,19 @@ class User implements UserInterface, \Serializable
     }
 
     /**
-     * @param mixed $createdAt
+     * @return mixed
      */
-    public function setCreatedAt($createdAt)
+    public function getCurrencySubscriptions()
     {
-        $this->createdAt = $createdAt;
+        return $this->currencySubscriptions;
+    }
+
+    /**
+     * @param mixed $currencySubscriptions
+     */
+    public function setCurrencySubscriptions($currencySubscriptions)
+    {
+        $this->currencySubscriptions = $currencySubscriptions;
     }
 
     public function eraseCredentials()
@@ -191,7 +289,7 @@ class User implements UserInterface, \Serializable
             $this->name,
             $this->password,
             // see section on salt below
-            // $this->salt,
+            $this->salt,
         ]);
     }
 
@@ -205,7 +303,7 @@ class User implements UserInterface, \Serializable
             $this->name,
             $this->password,
             // see section on salt below
-            // $this->salt
+            $this->salt
             ) = unserialize($serialized);
     }
 }

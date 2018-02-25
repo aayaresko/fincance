@@ -39,7 +39,7 @@ class SubscribeController extends Controller
                     $em->flush();
                     $this->addFlash('success', 'User created successfully!');
                 } else {
-                    $this->addFlash('error', 'Something went wrong!');
+                    $this->addFlash('danger', 'Something went wrong!');
                 }
 
                 return $this->redirectToRoute('subscribe_new');
