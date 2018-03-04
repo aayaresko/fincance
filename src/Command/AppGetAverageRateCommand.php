@@ -62,22 +62,23 @@ class AppGetAverageRateCommand extends ContainerAwareCommand
         } else {
             $currencies = $currencyRepository->findAll();
         }
-        $created = 0;
+        $created      = 0;
+        $lowestRates  = [];
+        $highestRates = [];
         foreach ($currencies as $currency) {
             /** @var Currency $currency */
             $averageRate = $averageRateService->createFromRateIfNotExist($currency, AverageRateService::TYPE_SALE);
             if ($averageRate) {
-                $rate = $rateRepository->getLowestSaleByCurrency($currency);
-                $this->sendEmail($io, 'email/rate/sale/lowest.html.twig', $rate);
+                $lowestRates[] = $rateRepository->getLowestSaleByCurrency($currency);
                 $created++;
             }
             $averageRate = $averageRateService->createFromRateIfNotExist($currency, AverageRateService::TYPE_BUY);
             if ($averageRate) {
-                $rate = $rateRepository->getHighestBuyByCurrency($currency);
-                $this->sendEmail($io, 'email/rate/buy/highest.html.twig', $rate);
+                $highestRates[] = $rateRepository->getHighestBuyByCurrency($currency);
                 $created++;
             }
         }
+        $this->sendEmail($io, $lowestRates, $highestRates);
         if ($created) {
             $io->writeln([
                 sprintf('%d average rates created.', $created),
@@ -90,14 +91,17 @@ class AppGetAverageRateCommand extends ContainerAwareCommand
         $io->writeln('Done.');
     }
 
-    private function sendEmail(SymfonyStyle $io, $template, $rate = null)
+    private function sendEmail(SymfonyStyle $io, array $lowestRates = [], array $highestRates = [])
     {
         /**
          * @var Subscriber $subscriber
          */
+        if (empty($lowestRates) || empty($highestRates)) {
+            return;
+        }
         $subscriber = $this->getContainer()->get(Subscriber::class);
         $templating = $this->getContainer()->get('twig');
-        if ($rate instanceof Rate) {
+        foreach ($lowestRates as $rate) {
             $io->writeln(
                 sprintf(
                     'The lowest rate for currency %s is %d.',
@@ -105,14 +109,23 @@ class AppGetAverageRateCommand extends ContainerAwareCommand
                     $rate->getId()
                 )
             );
-            $subscriber
-                ->sendEmailToUsers(
-                    $subscriber->getActiveUsers(),
-                    'Lowest rate',
-                    getenv('MAILER_USER'),
-                    $templating->render($template, compact('rate')),
-                    'text/html'
-                );
         }
+        foreach ($highestRates as $rate) {
+            $io->writeln(
+                sprintf(
+                    'The highest rate for currency %s is %d.',
+                    $rate->getCurrency()->getName(),
+                    $rate->getId()
+                )
+            );
+        }
+        $subscriber
+            ->sendEmailToUsers(
+                $subscriber->getActiveUsers(),
+                'Rates updates',
+                getenv('MAILER_USER'),
+                $templating->render('email/rate/updates.html.twig', compact('lowestRates', 'highestRates')),
+                'text/html'
+            );
     }
 }
