@@ -100,8 +100,8 @@ class AppGetAverageRateCommand extends ContainerAwareCommand
             return;
         }
         $subscriber = $this->getContainer()->get(Subscriber::class);
-        $templating = $this->getContainer()->get('twig');
         foreach ($lowestRates as $rate) {
+            /** @var Rate $rate */
             $io->writeln(
                 sprintf(
                     'The lowest rate for currency %s is %d.',
@@ -111,6 +111,7 @@ class AppGetAverageRateCommand extends ContainerAwareCommand
             );
         }
         foreach ($highestRates as $rate) {
+            /** @var Rate $rate */
             $io->writeln(
                 sprintf(
                     'The highest rate for currency %s is %d.',
@@ -119,13 +120,6 @@ class AppGetAverageRateCommand extends ContainerAwareCommand
                 )
             );
         }
-        $subscriber
-            ->sendEmailToUsers(
-                $subscriber->getActiveUsers(),
-                'Rates updates',
-                getenv('MAILER_USER'),
-                $templating->render('email/rate/updates.html.twig', compact('lowestRates', 'highestRates')),
-                'text/html'
-            );
+        $subscriber->sendRatesUpdatesEmailToActiveUsers($lowestRates, $highestRates);
     }
 }
