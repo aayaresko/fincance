@@ -10,7 +10,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @Route("/subscription")
@@ -26,6 +25,7 @@ class CurrencySubscriptionController extends Controller
          * @var EntityManager $em
          * @var SubscriptionService $subscriptionService
          */
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $em                  = $this->get('doctrine.orm.entity_manager');
         $subscriptionService = $this->get(SubscriptionService::class);
         $subscription        = new CurrencySubscription();

@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 class SubscribeController extends Controller
 {
     /**
-     * @Route("/subscribe/new", name="subscribe_new")
+     * @Route("/subscribe", name="subscribe")
      * @Method({"GET", "POST"})
      */
     public function new(Request $request)
@@ -24,6 +24,11 @@ class SubscribeController extends Controller
          * @var EntityManager $em
          * @var UserService $userService
          */
+        if ($this->getUser()) {
+            $this->addFlash('notice', 'You are already subscribed.');
+
+            return $this->redirectToRoute('user_profile');
+        }
         $em          = $this->get('doctrine.orm.entity_manager');
         $userService = $this->get(UserService::class);
         $user        = new User();
@@ -42,7 +47,7 @@ class SubscribeController extends Controller
                     $this->addFlash('danger', 'Something went wrong!');
                 }
 
-                return $this->redirectToRoute('subscribe_new');
+                return $this->redirectToRoute('subscribe');
             }
         }
 
