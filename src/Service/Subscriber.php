@@ -6,6 +6,8 @@ use App\Entity\Rate;
 use App\Entity\Subscription\CurrencySubscription;
 use App\Entity\User;
 use App\Repository\UserRepository;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 class Subscriber
 {
@@ -18,6 +20,10 @@ class Subscriber
      */
     private $templating;
     /**
+     * @var RouterInterface $router
+     */
+    private $router;
+    /**
      * @var UserRepository
      */
     private $userRepository;
@@ -27,12 +33,18 @@ class Subscriber
      *
      * @param \Swift_Mailer $mailer
      * @param \Twig_Environment $templating
+     * @param RouterInterface $router
      * @param UserRepository $userRepository
      */
-    public function __construct(\Swift_Mailer $mailer, \Twig_Environment $templating, UserRepository $userRepository)
-    {
+    public function __construct(
+        \Swift_Mailer $mailer,
+        \Twig_Environment $templating,
+        RouterInterface $router,
+        UserRepository $userRepository
+    ) {
         $this->mailer         = $mailer;
         $this->templating     = $templating;
+        $this->router         = $router;
         $this->userRepository = $userRepository;
     }
 
@@ -110,7 +122,10 @@ class Subscriber
             $message->setBody(
                 $this->templating->render(
                     'email/rate/updates.html.twig',
-                    compact('ratesData')
+                    [
+                        'ratesData'  => $ratesData,
+                        'profileUrl' => $this->router->generate('user_profile', [], UrlGeneratorInterface::ABSOLUTE_URL),
+                    ]
                 ),
                 $templateContentType
             );
