@@ -88,6 +88,8 @@ class Subscriber
         }
         $rates   = $this->formatRatesData($lowestRates, $highestRates);
         $message = (new \Swift_Message('Rates updates'));
+        $headers = $message->getHeaders();
+        $headers->addTextHeader('List-Unsubscribe', '<' . getenv('MAILER_USER') . '>');
         $message->setFrom($from);
         $activeUsers = $this->getActiveUsers();
         foreach ($activeUsers as $user) {
