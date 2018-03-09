@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\SubscribeType;
 use App\Service\UserService;
-use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -21,7 +20,6 @@ class SubscribeController extends Controller
     public function new(Request $request)
     {
         /**
-         * @var EntityManager $em
          * @var UserService $userService
          */
         if ($this->getUser()) {
@@ -29,7 +27,7 @@ class SubscribeController extends Controller
 
             return $this->redirectToRoute('user_profile');
         }
-        $em          = $this->get('doctrine.orm.entity_manager');
+        $em          = $this->getDoctrine()->getManager();
         $userService = $this->get(UserService::class);
         $user        = new User();
         $form        = $this->createForm(SubscribeType::class, $user);

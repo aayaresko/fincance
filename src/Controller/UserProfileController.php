@@ -16,10 +16,7 @@ class UserProfileController extends Controller
      */
     public function edit(Request $request)
     {
-        /**
-         * @var EntityManager $em
-         */
-        $em   = $this->get('doctrine.orm.entity_manager');
+        $em   = $this->getDoctrine()->getManager();
         $user = $this->getUser();
         $form = $this
             ->createForm(

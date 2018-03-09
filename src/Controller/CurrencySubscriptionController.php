@@ -22,11 +22,10 @@ class CurrencySubscriptionController extends Controller
     public function new(Request $request)
     {
         /**
-         * @var EntityManager $em
          * @var SubscriptionService $subscriptionService
          */
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        $em                  = $this->get('doctrine.orm.entity_manager');
+        $em                  = $this->getDoctrine()->getManager();
         $subscriptionService = $this->get(SubscriptionService::class);
         $subscription        = new CurrencySubscription();
         $form                = $this->createForm(CurrencySubscriptionType::class, $subscription);
