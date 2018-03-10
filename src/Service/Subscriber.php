@@ -118,7 +118,7 @@ class Subscriber
             if (empty($ratesData)) {
                 continue;
             }
-            $message->setTo('aayaresko@main.disbalans.net');
+            $message->setTo($user->getEmail());
             $message->setBody(
                 $this->templating->render(
                     'email/rate/updates.html.twig',
