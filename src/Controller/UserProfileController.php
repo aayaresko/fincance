@@ -27,15 +27,13 @@ class UserProfileController extends Controller
                 ]
             );
         $form->add('submit', SubmitType::class, ['label' => 'Update']);
-        if ($request->isMethod('POST')) {
-            $form->handleRequest($request);
-            if ($form->isValid()) {
-                $em->persist($user);
-                $em->flush();
-                $this->addFlash('success', 'Your profile updated successfully!');
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($user);
+            $em->flush();
+            $this->addFlash('success', 'Your profile updated successfully!');
 
-                return $this->redirectToRoute('user_profile');
-            }
+            return $this->redirectToRoute('user_profile');
         }
 
         return $this->render(

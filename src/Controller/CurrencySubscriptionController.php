@@ -21,30 +21,18 @@ class CurrencySubscriptionController extends Controller
      */
     public function new(Request $request)
     {
-        /**
-         * @var SubscriptionService $subscriptionService
-         */
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        $em                  = $this->getDoctrine()->getManager();
-        $subscriptionService = $this->get(SubscriptionService::class);
-        $subscription        = new CurrencySubscription();
-        $form                = $this->createForm(CurrencySubscriptionType::class, $subscription);
+        $em     = $this->getDoctrine()->getManager();
+        $entity = new CurrencySubscription();
+        $form   = $this->createForm(CurrencySubscriptionType::class, $entity);
         $form->add('submit', SubmitType::class, ['label' => 'Create']);
-        if ($request->isMethod('POST')) {
-            $form->handleRequest($request);
-            if ($form->isValid()) {
-                /** @var CurrencySubscription $data */
-                $data         = $form->getData();
-                $subscription = $subscriptionService->createCurrencySubscription($data);
-                if ($subscription) {
-                    $em->flush();
-                    $this->addFlash('success', 'Currency subscription created successfully!');
-                } else {
-                    $this->addFlash('error', 'Something went wrong!');
-                }
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($entity);
+            $em->flush();
+            $this->addFlash('success', 'Currency subscription created successfully!');
 
-                return $this->redirectToRoute('subscription_currency');
-            }
+            return $this->redirectToRoute('subscription_currency');
         }
 
         return $this->render(
