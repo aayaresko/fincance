@@ -6,6 +6,12 @@ use App\Entity\AverageRate;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
+/**
+ * @method AverageRate|null find($id, $lockMode = null, $lockVersion = null)
+ * @method AverageRate|null findOneBy(array $criteria, array $orderBy = null)
+ * @method AverageRate[]    findAll()
+ * @method AverageRate[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
 class AverageRateRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
@@ -18,8 +24,8 @@ class AverageRateRepository extends ServiceEntityRepository
         return $this->findOneBy(
             [
                 'value'     => $rate->getValue(),
+                'type'      => $rate->getType(),
                 'currency'  => $rate->getCurrency(),
-                //'createdAt' => ''
             ]
         );
     }

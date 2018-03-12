@@ -6,6 +6,12 @@ use App\Entity\Rate;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
+/**
+ * @method Rate|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Rate|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Rate[]    findAll()
+ * @method Rate[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
 class RateRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
