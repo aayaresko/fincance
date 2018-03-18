@@ -89,6 +89,7 @@ class UserService
         $entity->setName($name);
         $entity->setEmail($email);
         $entity->setPlainPassword($plainPassword);
+        $entity->addRole(User::ROLE_DEFAULT);
         $password = $this->encoder->encodePassword($entity, $plainPassword);
         $entity->setPassword($password);
         $this->entityManager->persist($entity);
