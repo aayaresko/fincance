@@ -21,13 +21,31 @@ class AverageRateRepository extends ServiceEntityRepository
 
     public function findDuplicated(AverageRate $rate)
     {
-        return $this->findOneBy(
-            [
-                'value'     => $rate->getValue(),
-                'type'      => $rate->getType(),
-                'currency'  => $rate->getCurrency(),
-            ]
-        );
+        $qb        = $this->createQueryBuilder('r');
+        $precision = 0;
+        $value     = $rate->getValue();
+        if ($rate->getValue() >= 1) {
+            $precision = 2;
+            $value = round($rate->getValue(), $precision);
+        } elseif ($rate->getValue() < 1 && $rate->getValue() >= 0.1) {
+            $precision = 5;
+            $value = round($rate->getValue(), $precision);
+        }
+        if ($precision) {
+            $qb->select('r', 'ROUND(r.value, ' . $precision . ') as rounded_value');
+            $qb->having('rounded_value = :value');
+        } else {
+            $qb->where('r.value = :value');
+        }
+        $qb
+            ->andWhere('r.type = :type')
+            ->andWhere('r.currency = :currency')
+            ->setParameter('type', $rate->getType())
+            ->setParameter('currency', $rate->getCurrency())
+            ->setParameter('value', $value)
+            ->setMaxResults(1);
+
+        return $qb->getQuery()->execute();
     }
 
     /*
