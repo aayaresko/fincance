@@ -28,7 +28,16 @@ class AverageRateRepository extends ServiceEntityRepository
             $precision = 2;
             $value = round($rate->getValue(), $precision);
         } elseif ($rate->getValue() < 1 && $rate->getValue() >= 0.1) {
-            $precision = 5;
+            $precision = 4;
+            $value = round($rate->getValue(), $precision);
+        } elseif ($rate->getValue() < 0.1 && $rate->getValue() >= 0.01) {
+            $precision = 6;
+            $value = round($rate->getValue(), $precision);
+        } elseif ($rate->getValue() < 0.01 && $rate->getValue() >= 0.001) {
+            $precision = 8;
+            $value = round($rate->getValue(), $precision);
+        } elseif ($rate->getValue() < 0.001 && $rate->getValue() >= 0.0001) {
+            $precision = 10;
             $value = round($rate->getValue(), $precision);
         }
         if ($precision) {
