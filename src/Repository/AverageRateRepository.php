@@ -24,21 +24,21 @@ class AverageRateRepository extends ServiceEntityRepository
         $qb        = $this->createQueryBuilder('r');
         $precision = 0;
         $value     = $rate->getValue();
-        if ($rate->getValue() >= 1) {
+        if ($value >= 1) {
             $precision = 2;
-            $value = round($rate->getValue(), $precision);
-        } elseif ($rate->getValue() < 1 && $rate->getValue() >= 0.1) {
+            $value     = round($value, $precision);
+        } elseif ($value < 1 && $value >= 0.1) {
             $precision = 4;
-            $value = round($rate->getValue(), $precision);
-        } elseif ($rate->getValue() < 0.1 && $rate->getValue() >= 0.01) {
+            $value     = round($value, $precision);
+        } elseif ($value < 0.1 && $value >= 0.01) {
             $precision = 6;
-            $value = round($rate->getValue(), $precision);
-        } elseif ($rate->getValue() < 0.01 && $rate->getValue() >= 0.001) {
+            $value     = round($value, $precision);
+        } elseif ($value < 0.01 && $value >= 0.001) {
             $precision = 8;
-            $value = round($rate->getValue(), $precision);
-        } elseif ($rate->getValue() < 0.001 && $rate->getValue() >= 0.0001) {
+            $value     = round($value, $precision);
+        } elseif ($value < 0.001 && $value >= 0.0001) {
             $precision = 10;
-            $value = round($rate->getValue(), $precision);
+            $value     = round($value, $precision);
         }
         if ($precision) {
             $qb->select('r', 'ROUND(r.value, ' . $precision . ') as rounded_value');
