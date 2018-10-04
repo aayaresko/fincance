@@ -1,0 +1,27 @@
+{% extends 'email/base.html.twig' %}
+{% block content %}
+    <h1>Hello!</h1>
+    <p>Currency rates was updated.</p>
+    {% if ratesData is not empty %}
+        {% for item in ratesData %}
+            {% set currency = item.currency %}
+            <p>
+                Updates for currency <b>{{ currency.name|upper }}:</b>
+            </p>
+            <ul>
+                {% if item.lowest %}
+                    {% set rate = item.lowest  %}
+                    <li>
+                        Lowest rate is {{ rate.saleValue }}.
+                    </li>
+                {% endif %}
+                {% if item.highest %}
+                    {% set rate = item.highest  %}
+                    <li>
+                        Highest rate is {{ rate.saleValue }}.
+                    </li>
+                {% endif %}
+            </ul>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
