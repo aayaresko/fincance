@@ -102,7 +102,7 @@ class AppGetAverageRateCommand extends ContainerAwareCommand
         $io->writeln('Done.');
     }
 
-    private function sendEmail(SymfonyStyle $io, array $lowestRates = [], array $highestRates = [])
+    private function sendEmail(SymfonyStyle $io, array $lowestRates = [], array $highestRates = []): void
     {
         if (empty($lowestRates) || empty($highestRates)) {
             return;
