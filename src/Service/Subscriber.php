@@ -66,8 +66,11 @@ class Subscriber
     public function sendEmailToUsers($data, $subject, $from, $template, $templateContentType = 'text/html')
     {
         $message = (new \Swift_Message($subject));
-        $message->setFrom($from);
-        $message->setBody($template, $templateContentType);
+
+        $message
+            ->setFrom($from)
+            ->setBody($template, $templateContentType);
+
         if (is_array($data)) {
             foreach ($data as $user) {
                 /** @var User $user */
@@ -94,20 +97,23 @@ class Subscriber
         array $highestRates = [],
         $from = null,
         $templateContentType = 'text/html'
-    ) {
+    ): void {
         if (empty($from)) {
             $from = getenv('MAILER_USER');
         }
+
         $rates   = $this->formatRatesData($lowestRates, $highestRates);
         $message = (new \Swift_Message('Rates updates'));
         $headers = $message->getHeaders();
+
         $headers->addTextHeader('List-Unsubscribe', '<' . getenv('MAILER_USER') . '>');
         $message->setFrom($from);
-        $activeUsers = $this->getActiveUsers();
-        foreach ($activeUsers as $user) {
-            $ratesData = [];
+
+        foreach ($this->getActiveUsers() as $user) {
             /** @var User $user */
             $subscriptions = $user->getCurrencySubscriptions();
+            $ratesData     = [];
+
             foreach ($subscriptions as $subscription) {
                 /** @var CurrencySubscription $subscription */
                 $currencyId = $subscription->getCurrency()->getId();
@@ -115,20 +121,31 @@ class Subscriber
                     $ratesData[] = $rates[$currencyId];
                 }
             }
+
             if (empty($ratesData)) {
                 continue;
             }
-            $message->setTo($user->getEmail());
-            $message->setBody(
-                $this->templating->render(
+
+            try {
+                $template = $this->templating->render(
                     'email/rate/updates.html.twig',
                     [
                         'ratesData'  => $ratesData,
                         'profileUrl' => $this->router->generate('user_profile', [], UrlGeneratorInterface::ABSOLUTE_URL),
                     ]
-                ),
-                $templateContentType
-            );
+                );
+            } catch (\Twig_Error $exception) {
+                $template = null;
+            }
+
+            if (null === $template) {
+                break;
+            }
+
+            $message
+                ->setTo($user->getEmail())
+                ->setBody($template, $templateContentType);
+
             $this->mailer->send($message);
         }
     }
@@ -138,27 +155,35 @@ class Subscriber
      * @param array $highestRates
      * @return array
      */
-    private function formatRatesData(array $lowestRates = [], array $highestRates)
+    private function formatRatesData(array $lowestRates = [], array $highestRates): array
     {
         $rates = [];
+
         foreach ($lowestRates as $lowestRate) {
             /** @var Rate $lowestRate */
             $currencyId = $lowestRate->getCurrency()->getId();
+
             if (!isset($rates[$currencyId])) {
                 $rates[$currencyId] = [];
             }
-            $rates[$currencyId]['lowest']   = $lowestRate;
+
+            $rates[$currencyId]['lowest'] = $lowestRate;
+
             if (!isset($rates[$currencyId]['currency'])) {
                 $rates[$currencyId]['currency'] = $lowestRate->getCurrency();
             }
         }
+
         foreach ($highestRates as $highestRate) {
             /** @var Rate $highestRate */
             $currencyId = $highestRate->getCurrency()->getId();
+
             if (!isset($rates[$currencyId])) {
                 $rates[$currencyId] = [];
             }
-            $rates[$currencyId]['highest']  = $highestRate;
+
+            $rates[$currencyId]['highest'] = $highestRate;
+
             if (!isset($rates[$currencyId]['currency'])) {
                 $rates[$currencyId]['currency'] = $highestRate->getCurrency();
             }
