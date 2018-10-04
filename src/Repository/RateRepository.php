@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Currency;
 use App\Entity\Rate;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
@@ -23,31 +24,31 @@ class RateRepository extends ServiceEntityRepository
     /**
      * @param $currency
      * @param \DateTime $endDate
-     * @return mixed
+     * @return Rate|null
      */
-    public function getLowestSaleByCurrency($currency, \DateTime $endDate)
+    public function getLowestSaleByCurrency($currency, \DateTime $endDate): ?Rate
     {
-        return $this->getOrderedByCurrencyAndAttribute($currency, $endDate,'saleValue', 'ASC');
+        return $this->getOrderedByCurrencyAndAttribute($currency, $endDate, 'saleValue', 'ASC');
     }
 
     /**
      * @param $currency
      * @param \DateTime $endDate
-     * @return mixed
+     * @return Rate|null
      */
-    public function getHighestBuyByCurrency($currency, \DateTime $endDate)
+    public function getHighestBuyByCurrency($currency, \DateTime $endDate): ?Rate
     {
-        return $this->getOrderedByCurrencyAndAttribute($currency, $endDate,'buyValue', 'DESC');
+        return $this->getOrderedByCurrencyAndAttribute($currency, $endDate, 'buyValue', 'DESC');
     }
 
     /**
-     * @param $currency
+     * @param Currency $currency
      * @param \DateTime $endDate
      * @param $attribute
      * @param $order
-     * @return mixed
+     * @return Rate|null
      */
-    private function getOrderedByCurrencyAndAttribute($currency, \DateTime $endDate, $attribute, $order)
+    private function getOrderedByCurrencyAndAttribute(Currency $currency, \DateTime $endDate, $attribute, $order): ?Rate
     {
         $builder = $this->createQueryBuilder('r');
 
@@ -67,50 +68,46 @@ class RateRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param mixed $currency
-     * @return array
+     * @param Currency $currency
+     * @param \DateTime $endDate
+     * @return float|null
      */
-    public function getAverageSaleByCurrency($currency)
+    public function getAverageSaleByCurrency(Currency $currency, \DateTime $endDate): ?float
     {
-        return $this->getAverageByCurrency($currency, 'saleValue');
+        return $this->getAverageByCurrency($currency, $endDate, 'saleValue');
     }
 
     /**
-     * @param mixed $currency
-     * @return array
+     * @param Currency $currency
+     * @param \DateTime $endDate
+     * @return float|null
      */
-    public function getAverageBuyByCurrency($currency)
+    public function getAverageBuyByCurrency(Currency $currency, \DateTime $endDate): ?float
     {
-        return $this->getAverageByCurrency($currency, 'buyValue');
+        return $this->getAverageByCurrency($currency, $endDate, 'buyValue');
     }
 
     /**
-     * @param mixed $currency
-     * @param string $attribute
-     * @return array
+     * @param Currency $currency
+     * @param \DateTime $endDate
+     * @param $attribute
+     * @return float|null
      */
-    private function getAverageByCurrency($currency, $attribute)
+    private function getAverageByCurrency(Currency $currency, \DateTime $endDate, $attribute): ?float
     {
-        return $this
-            ->createQueryBuilder('r')
+        $builder = $this->createQueryBuilder('r');
+
+        $builder
             ->select('AVG(r.' . $attribute . ')')
             ->where('r.currency = :currency')
             ->setParameter('currency', $currency)
-            ->getQuery()
-            ->getSingleScalarResult()
-            ;
-    }
+            ->andWhere('r.createdAt <= :date')
+            ->setParameter('date', $endDate);
 
-    /*
-    public function findBySomething($value)
-    {
-        return $this->createQueryBuilder('r')
-            ->where('r.something = :value')->setParameter('value', $value)
-            ->orderBy('r.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        try {
+            return $builder->getQuery()->getSingleScalarResult();
+        } catch (NonUniqueResultException $exception) {
+            return null;
+        }
     }
-    */
 }
