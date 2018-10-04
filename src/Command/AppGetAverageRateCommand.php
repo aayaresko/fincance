@@ -52,11 +52,11 @@ class AppGetAverageRateCommand extends ContainerAwareCommand
         /** @var CurrencyRepository $currencyRepository */
         $currencyRepository = $em->getRepository(Currency::class);
 
-        if (!empty($currenciesIdentifiers)) {
+        if (!empty($identifiers)) {
             $builder    = $currencyRepository->createQueryBuilder('c');
             $currencies = $builder
                 ->where(
-                    $builder->expr()->in('c.id', $currenciesIdentifiers)
+                    $builder->expr()->in('c.id', $identifiers)
                 )
                 ->getQuery()
                 ->execute();
@@ -64,24 +64,24 @@ class AppGetAverageRateCommand extends ContainerAwareCommand
             $currencies = $currencyRepository->findAll();
         }
 
-        $week         = new \DateTime('this sunday');
+        $startDate    = new \DateTime('this monday');
         $created      = 0;
         $lowestRates  = [];
         $highestRates = [];
 
         foreach ($currencies as $currency) {
             /** @var Currency $currency */
-            $averageRate = $averageRateService->createFromRateIfNotExist($currency, $week, AverageRateService::TYPE_SALE);
+            $averageRate = $averageRateService->createFromRateIfNotExist($currency, $startDate, AverageRateService::TYPE_SALE);
 
             if ($averageRate) {
-                $lowestRates[] = $rateRepository->getLowestSaleByCurrency($currency, $week);
+                $lowestRates[] = $rateRepository->getLowestSaleByCurrency($currency, $startDate);
                 $created++;
             }
 
-            $averageRate = $averageRateService->createFromRateIfNotExist($currency, $week, AverageRateService::TYPE_BUY);
+            $averageRate = $averageRateService->createFromRateIfNotExist($currency, $startDate, AverageRateService::TYPE_BUY);
 
             if ($averageRate) {
-                $highestRates[] = $rateRepository->getHighestBuyByCurrency($currency, $week);
+                $highestRates[] = $rateRepository->getHighestBuyByCurrency($currency, $startDate);
                 $created++;
             }
         }
