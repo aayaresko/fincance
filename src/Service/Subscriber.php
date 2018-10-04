@@ -109,6 +109,7 @@ class Subscriber
             foreach ($subscriptions as $subscription) {
                 /** @var CurrencySubscription $subscription */
                 $currencyId = $subscription->getCurrency()->getId();
+
                 if (isset($rates[$currencyId])) {
                     $ratesData[] = $rates[$currencyId];
                 }
@@ -119,18 +120,11 @@ class Subscriber
             }
 
             try {
-                $template = $this->templating->render(
-                    'email/rate/updates.html.twig',
-                    [
-                        'ratesData'  => $ratesData,
-                        'profileUrl' => $this->router->generate('user_profile', [], UrlGeneratorInterface::ABSOLUTE_URL),
-                    ]
-                );
+                $profileUrl = $this->router->generate('user_profile', [], UrlGeneratorInterface::ABSOLUTE_URL);
+                $template   = $this
+                    ->templating
+                    ->render('email/rate/updates.html.twig', compact('ratesData', 'profileUrl'));
             } catch (\Twig_Error $exception) {
-                $template = null;
-            }
-
-            if (null === $template) {
                 break;
             }
 
