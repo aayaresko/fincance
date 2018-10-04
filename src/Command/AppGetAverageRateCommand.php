@@ -8,7 +8,7 @@ use App\Repository\CurrencyRepository;
 use App\Repository\RateRepository;
 use App\Service\AverageRateService;
 use App\Service\Subscriber;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -27,80 +27,90 @@ class AppGetAverageRateCommand extends ContainerAwareCommand
                 'currenciesIdentifiers',
                 InputArgument::IS_ARRAY | InputArgument::OPTIONAL,
                 'List currencies identifiers (separate multiple names with a space)'
-            )
-        ;
+            );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): void
     {
-        $io = new SymfonyStyle($input, $output);
-        $currenciesIdentifiers = $input->getArgument('currenciesIdentifiers');
-        if (empty($currenciesIdentifiers)) {
+        $io          = new SymfonyStyle($input, $output);
+        $identifiers = $input->getArgument('currenciesIdentifiers');
+
+        if (empty($identifiers)) {
             $message = 'Checking lowest rates for all currencies';
         } else {
-            $message = sprintf('Checking lowest rates for currencies: %s', implode(',', $currenciesIdentifiers));
+            $message = sprintf('Checking lowest rates for currencies: %s', implode(',', $identifiers));
         }
+
         $io->comment($message);
-        /**
-         * @var EntityManager $em
-         * @var AverageRateService $averageRateService
-         * @var RateRepository $rateRepository
-         * @var CurrencyRepository $currencyRepository
-         */
-        $em                 = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $rateRepository     = $em->getRepository(Rate::class);
+
+        /** @var EntityManagerInterface $em */
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        /** @var RateRepository $rateRepository */
+        $rateRepository = $em->getRepository(Rate::class);
+        /** @var AverageRateService $averageRateService */
         $averageRateService = $this->getContainer()->get(AverageRateService::class);
+        /** @var CurrencyRepository $currencyRepository */
         $currencyRepository = $em->getRepository(Currency::class);
-        $week               = new \DateTime('this sunday');
+
         if (!empty($currenciesIdentifiers)) {
-            $qb         = $currencyRepository->createQueryBuilder('c');
-            $currencies = $qb
+            $builder    = $currencyRepository->createQueryBuilder('c');
+            $currencies = $builder
                 ->where(
-                    $qb->expr()->in('c.id', $currenciesIdentifiers)
+                    $builder->expr()->in('c.id', $currenciesIdentifiers)
                 )
                 ->getQuery()
                 ->execute();
         } else {
             $currencies = $currencyRepository->findAll();
         }
+
+        $week         = new \DateTime('this sunday');
         $created      = 0;
         $lowestRates  = [];
         $highestRates = [];
+
         foreach ($currencies as $currency) {
             /** @var Currency $currency */
-            $averageRate = $averageRateService->createFromRateIfNotExist($currency, AverageRateService::TYPE_SALE);
+            $averageRate = $averageRateService->createFromRateIfNotExist($currency, $week, AverageRateService::TYPE_SALE);
+
             if ($averageRate) {
                 $lowestRates[] = $rateRepository->getLowestSaleByCurrency($currency, $week);
                 $created++;
             }
-            $averageRate = $averageRateService->createFromRateIfNotExist($currency, AverageRateService::TYPE_BUY);
+
+            $averageRate = $averageRateService->createFromRateIfNotExist($currency, $week, AverageRateService::TYPE_BUY);
+
             if ($averageRate) {
                 $highestRates[] = $rateRepository->getHighestBuyByCurrency($currency, $week);
                 $created++;
             }
         }
+
         $this->sendEmail($io, $lowestRates, $highestRates);
+
         if ($created) {
             $io->writeln([
                 sprintf('%d average rates created.', $created),
                 'Persisting data.'
             ]);
+
             $em->flush();
         } else {
             $io->writeln('Nothing to do...');
         }
+
         $io->writeln('Done.');
     }
 
     private function sendEmail(SymfonyStyle $io, array $lowestRates = [], array $highestRates = [])
     {
-        /**
-         * @var Subscriber $subscriber
-         */
         if (empty($lowestRates) || empty($highestRates)) {
             return;
         }
+
+        /** @var Subscriber $subscriber */
         $subscriber = $this->getContainer()->get(Subscriber::class);
+
         foreach ($lowestRates as $rate) {
             /** @var Rate $rate */
             $io->writeln(
@@ -111,6 +121,7 @@ class AppGetAverageRateCommand extends ContainerAwareCommand
                 )
             );
         }
+
         foreach ($highestRates as $rate) {
             /** @var Rate $rate */
             $io->writeln(
@@ -121,6 +132,7 @@ class AppGetAverageRateCommand extends ContainerAwareCommand
                 )
             );
         }
+
         $subscriber->sendRatesUpdatesEmailToActiveUsers($lowestRates, $highestRates);
     }
 }

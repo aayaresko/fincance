@@ -54,12 +54,15 @@ class AverageRate
 
     /**
      * @param int $type
+     * @return AverageRate
      */
-    public function setType(int $type)
+    public function setType(int $type): AverageRate
     {
         if ($type === AverageRateService::TYPE_SALE || $type === AverageRateService::TYPE_BUY) {
             $this->type = $type;
         }
+
+        return $this;
     }
 
     /**
@@ -72,10 +75,13 @@ class AverageRate
 
     /**
      * @param float $value
+     * @return AverageRate
      */
-    public function setValue(float $value)
+    public function setValue(float $value): AverageRate
     {
         $this->value = $value;
+
+        return $this;
     }
 
     /**
@@ -88,10 +94,13 @@ class AverageRate
 
     /**
      * @param Currency $currency
+     * @return AverageRate
      */
-    public function setCurrency(Currency $currency)
+    public function setCurrency(Currency $currency): AverageRate
     {
         $this->currency = $currency;
+
+        return $this;
     }
 
     /**

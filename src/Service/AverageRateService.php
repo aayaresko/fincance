@@ -11,16 +11,18 @@ use Doctrine\ORM\EntityManagerInterface;
 class AverageRateService
 {
     const TYPE_SALE = 1;
-    const TYPE_BUY = 2;
+    const TYPE_BUY  = 2;
 
     /**
      * @var EntityManagerInterface;
      */
     private $entityManager;
+
     /**
      * @var RateRepository
      */
     private $rateRepository;
+
     /**
      * @var AverageRateRepository
      */
@@ -45,34 +47,44 @@ class AverageRateService
 
     /**
      * @param Currency $currency
-     * @param string $type
+     * @param \DateTime $endDate
+     * @param $type
      * @param bool $doFlush
-     * @return mixed
+     * @return AverageRate|null
      */
-    public function createFromRateIfNotExist(Currency $currency, $type, $doFlush = false)
-    {
+    public function createFromRateIfNotExist(
+        Currency $currency,
+        \DateTime $endDate,
+        string $type,
+        bool $doFlush = false
+    ): ?AverageRate {
         $entity = new AverageRate();
-        $entity->setType($type);
-        $entity->setCurrency($currency);
+
+        $entity
+            ->setType($type)
+            ->setCurrency($currency);
+
         switch ($type) {
             case self::TYPE_SALE:
-                $value = $this->rateRepository->getAverageSaleByCurrency($currency);
+                $value = $this->rateRepository->getAverageSaleByCurrency($currency, $endDate);
                 break;
             case self::TYPE_BUY:
-                $value = $this->rateRepository->getAverageBuyByCurrency($currency);
+                $value = $this->rateRepository->getAverageBuyByCurrency($currency, $endDate);
                 break;
             default:
-                $value = null;
+                return null;
         }
-        if (!$value) {
-            return false;
-        }
+
         $entity->setValue($value);
+
         $duplicated = $this->averageRateRepository->findDuplicated($entity);
+
         if ($duplicated) {
-            return false;
+            return null;
         }
+
         $this->entityManager->persist($entity);
+
         if ($doFlush) {
             $this->entityManager->flush();
         }
