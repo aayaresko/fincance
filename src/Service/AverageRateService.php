@@ -47,14 +47,14 @@ class AverageRateService
 
     /**
      * @param Currency $currency
-     * @param \DateTime $endDate
+     * @param \DateTime $startDate
      * @param $type
      * @param bool $doFlush
      * @return AverageRate|null
      */
     public function createFromRateIfNotExist(
         Currency $currency,
-        \DateTime $endDate,
+        \DateTime $startDate,
         string $type,
         bool $doFlush = false
     ): ?AverageRate {
@@ -66,10 +66,10 @@ class AverageRateService
 
         switch ($type) {
             case self::TYPE_SALE:
-                $value = $this->rateRepository->getAverageSaleByCurrency($currency, $endDate);
+                $value = $this->rateRepository->getAverageSaleByCurrency($currency, $startDate);
                 break;
             case self::TYPE_BUY:
-                $value = $this->rateRepository->getAverageBuyByCurrency($currency, $endDate);
+                $value = $this->rateRepository->getAverageBuyByCurrency($currency, $startDate);
                 break;
             default:
                 return null;
