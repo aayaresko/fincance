@@ -51,6 +51,7 @@ class AppGetAverageRateCommand extends ContainerAwareCommand
         $rateRepository     = $em->getRepository(Rate::class);
         $averageRateService = $this->getContainer()->get(AverageRateService::class);
         $currencyRepository = $em->getRepository(Currency::class);
+        $week               = new \DateTime('this sunday');
         if (!empty($currenciesIdentifiers)) {
             $qb         = $currencyRepository->createQueryBuilder('c');
             $currencies = $qb
@@ -69,12 +70,12 @@ class AppGetAverageRateCommand extends ContainerAwareCommand
             /** @var Currency $currency */
             $averageRate = $averageRateService->createFromRateIfNotExist($currency, AverageRateService::TYPE_SALE);
             if ($averageRate) {
-                $lowestRates[] = $rateRepository->getLowestSaleByCurrency($currency);
+                $lowestRates[] = $rateRepository->getLowestSaleByCurrency($currency, $week);
                 $created++;
             }
             $averageRate = $averageRateService->createFromRateIfNotExist($currency, AverageRateService::TYPE_BUY);
             if ($averageRate) {
-                $highestRates[] = $rateRepository->getHighestBuyByCurrency($currency);
+                $highestRates[] = $rateRepository->getHighestBuyByCurrency($currency, $week);
                 $created++;
             }
         }

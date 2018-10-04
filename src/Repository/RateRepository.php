@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Rate;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -20,40 +21,49 @@ class RateRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param mixed $currency
-     * @return Rate|null
-     */
-    public function getLowestSaleByCurrency($currency)
-    {
-        return $this->getOrderedByCurrencyAndAttribute($currency, 'saleValue', 'ASC');
-    }
-
-    /**
-     * @param mixed $currency
-     * @return Rate|null
-     */
-    public function getHighestBuyByCurrency($currency)
-    {
-        return $this->getOrderedByCurrencyAndAttribute($currency, 'buyValue', 'DESC');
-    }
-
-    /**
-     * @param mixed $currency
-     * @param string $attribute
-     * @param string $order
+     * @param $currency
+     * @param \DateTime $endDate
      * @return mixed
      */
-    private function getOrderedByCurrencyAndAttribute($currency, $attribute, $order)
+    public function getLowestSaleByCurrency($currency, \DateTime $endDate)
     {
-        return $this
-            ->createQueryBuilder('r')
+        return $this->getOrderedByCurrencyAndAttribute($currency, $endDate,'saleValue', 'ASC');
+    }
+
+    /**
+     * @param $currency
+     * @param \DateTime $endDate
+     * @return mixed
+     */
+    public function getHighestBuyByCurrency($currency, \DateTime $endDate)
+    {
+        return $this->getOrderedByCurrencyAndAttribute($currency, $endDate,'buyValue', 'DESC');
+    }
+
+    /**
+     * @param $currency
+     * @param \DateTime $endDate
+     * @param $attribute
+     * @param $order
+     * @return mixed
+     */
+    private function getOrderedByCurrencyAndAttribute($currency, \DateTime $endDate, $attribute, $order)
+    {
+        $builder = $this->createQueryBuilder('r');
+
+        $builder
             ->where('r.currency = :currency')
             ->setParameter('currency', $currency)
+            ->andWhere('r.createdAt <= :date')
+            ->setParameter('date', $endDate)
             ->orderBy('r.' . $attribute, $order)
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getOneOrNullResult()
-            ;
+            ->setMaxResults(1);
+
+        try {
+            return $builder->getQuery()->getOneOrNullResult();
+        } catch (NonUniqueResultException $exception) {
+            return null;
+        }
     }
 
     /**
