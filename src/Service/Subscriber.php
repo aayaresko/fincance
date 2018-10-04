@@ -49,21 +49,13 @@ class Subscriber
     }
 
     /**
-     * @return User[]
-     */
-    public function getActiveUsers()
-    {
-        return $this->userRepository->getActiveUsers();
-    }
-
-    /**
      * @param mixed $data
      * @param string $subject
      * @param string $from
      * @param string $template
      * @param string $templateContentType
      */
-    public function sendEmailToUsers($data, $subject, $from, $template, $templateContentType = 'text/html')
+    public function sendEmailToUsers($data, $subject, $from, $template, $templateContentType = 'text/html'): void
     {
         $message = (new \Swift_Message($subject));
 
@@ -109,7 +101,7 @@ class Subscriber
         $headers->addTextHeader('List-Unsubscribe', '<' . getenv('MAILER_USER') . '>');
         $message->setFrom($from);
 
-        foreach ($this->getActiveUsers() as $user) {
+        foreach ($this->userRepository->getActiveUsers() as $user) {
             /** @var User $user */
             $subscriptions = $user->getCurrencySubscriptions();
             $ratesData     = [];
