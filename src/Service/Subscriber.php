@@ -137,6 +137,28 @@ class Subscriber
     }
 
     /**
+     * @param int $currencyId
+     * @param array $rates
+     */
+    private function appendRateItem(int $currencyId, array &$rates): void
+    {
+        if (!isset($rates[$currencyId])) {
+            $rates[$currencyId] = [
+                'highest' => null,
+                'lowest'  => null
+            ];
+        } else {
+            if (!isset($rates[$currencyId]['highest'])) {
+                $rates[$currencyId]['highest'] = null;
+            }
+
+            if (!isset($rates[$currencyId]['lowest'])) {
+                $rates[$currencyId]['lowest'] = null;
+            }
+        }
+    }
+
+    /**
      * @param array $lowestRates
      * @param array $highestRates
      * @return array
@@ -149,9 +171,7 @@ class Subscriber
             /** @var Rate $lowestRate */
             $currencyId = $lowestRate->getCurrency()->getId();
 
-            if (!isset($rates[$currencyId])) {
-                $rates[$currencyId] = [];
-            }
+            $this->appendRateItem($currencyId, $rates);
 
             $rates[$currencyId]['lowest'] = $lowestRate;
 
@@ -164,9 +184,7 @@ class Subscriber
             /** @var Rate $highestRate */
             $currencyId = $highestRate->getCurrency()->getId();
 
-            if (!isset($rates[$currencyId])) {
-                $rates[$currencyId] = [];
-            }
+            $this->appendRateItem($currencyId, $rates);
 
             $rates[$currencyId]['highest'] = $highestRate;
 

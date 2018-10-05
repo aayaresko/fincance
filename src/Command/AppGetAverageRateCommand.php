@@ -64,7 +64,7 @@ class AppGetAverageRateCommand extends ContainerAwareCommand
             $currencies = $currencyRepository->findAll();
         }
 
-        $startDate    = new \DateTime('this monday');
+        $startDate    = new \DateTime('monday this week');
         $created      = 0;
         $lowestRates  = [];
         $highestRates = [];
