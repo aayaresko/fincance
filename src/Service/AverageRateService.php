@@ -59,6 +59,7 @@ class AverageRateService
         bool $doFlush = false
     ): ?AverageRate {
         $entity = new AverageRate();
+        $value  = null;
 
         $entity
             ->setType($type)
@@ -71,8 +72,10 @@ class AverageRateService
             case self::TYPE_BUY:
                 $value = $this->rateRepository->getAverageBuyByCurrency($currency, $startDate);
                 break;
-            default:
-                return null;
+        }
+
+        if (null === $value) {
+            return null;
         }
 
         $entity->setValue($value);
