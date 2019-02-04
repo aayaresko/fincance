@@ -18,7 +18,7 @@ class StatisticController extends Controller
         $dto = new StepsDto();
         $form = $this->createForm(StepsType::class, $dto);
 
-        $form->add('calculate', SubmitType::class);
+        $form->add('calculate', SubmitType::class, ['label' => 'steps.calculate']);
         $form->handleRequest($request);
 
         $form->isSubmitted() && $form->isValid();
