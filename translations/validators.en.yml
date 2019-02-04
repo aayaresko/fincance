@@ -1,0 +1,12 @@
+steps:
+    deposit_amount:
+        blank: "Please provide initial deposit"
+        invalid: "The deposit amount is invalid"
+    number:
+        blank: "Please specify the number of steps, you are going to use"
+        invalid: "The number of steps is invalid"
+    first_step_percent:
+        blank: "Please provide start percent from your deposit"
+        short: "The start percent from your deposit is to short it should be at least {{ limit }}"
+        long: "The start percent from your deposit is to long it should be less than {{ limit }}"
+        invalid: "The start percent from your deposit is invalid"

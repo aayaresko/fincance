@@ -1,0 +1,29 @@
+App\Dto\StepsDto:
+    properties:
+        depositAmount:
+            - NotBlank:
+                message: steps.deposit_amount.blank
+                groups: [steps_for_deposit]
+            - GreaterThan:
+                value: 10
+                message: steps.deposit_amount.invalid
+                groups: [steps_for_deposit]
+        number:
+            - NotBlank:
+                message: steps.number.blank
+                groups: [steps_for_deposit]
+            - GreaterThan:
+                value: 0
+                message: steps.number.invalid
+                groups: [steps_for_deposit]
+        firstStepPercent:
+            - NotBlank:
+                message: steps.first_step_percent.blank
+                groups: [steps_for_deposit]
+            - Range:
+                min: 1
+                max: 100
+                minMessage: steps.first_step_percent.short
+                maxMessage: steps.first_step_percent.long
+                invalidMessage: steps.first_step_percent.invalid
+                groups: [steps_for_deposit]

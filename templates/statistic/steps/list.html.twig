@@ -1,0 +1,18 @@
+<p>
+    {{ "steps.list_title"|trans({'length': steps|length, 'amount': depositAmount}) }}:
+</p>
+{% set state = depositAmount < totalSpend %}
+{% set class = state ? "danger" : "info" %}
+{% set word = state ? "steps.amount.bigger" : "steps.amount.lower" %}
+<p class="text-{{ class }}">
+    {{ "steps.info"|trans({'totalSpend': totalSpend, 'word': word|trans}) }}
+</p>
+<div class="form-group">
+    <ul class="list-group">
+        {% for step in steps %}
+            <li class="list-group-item">
+                {{ loop.index }} {{ "steps.step"|trans }} = {{ step }}
+            </li>
+        {% endfor %}
+    </ul>
+</div>

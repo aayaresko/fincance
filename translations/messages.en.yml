@@ -1,0 +1,12 @@
+steps:
+    deposit_amount: "Deposit amount"
+    number: "Number of steps"
+    first_step_percent: "First step percent"
+    calculate: "Calculate"
+    label: "Build steps for deposit"
+    list_title: "Okay, so length steps for deposit amount are"
+    info: "Total spend will be totalSpend. That is word than initial deposit."
+    step: "step"
+    amount:
+        bigger: "bigger"
+        lower: "lower"
