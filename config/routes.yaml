@@ -3,3 +3,11 @@
 #    controller: App\Controller\DefaultController::index
 logout:
     path: /logout
+
+steps:
+    path: /{_locale}/statistic/steps
+    controller: App\Controller\StatisticController::steps
+    defaults: {_locale: en}
+    methods: [GET, POST]
+    requirements:
+        _locale: en|ru

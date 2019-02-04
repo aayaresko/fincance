@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ "steps.label"|trans }}
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-12">
+            <h1>
+                {{ "steps.label"|trans }}
+            </h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            {% form_theme form 'form/bootstrap_4_layout.html.twig' %}
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            {{ form_end(form) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            {% include 'statistic/steps/list.html.twig' %}
+        </div>
+    </div>
+{% endblock %}

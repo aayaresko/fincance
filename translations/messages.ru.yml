@@ -1,0 +1,12 @@
+steps:
+    deposit_amount: "Размер депозита"
+    number: "Количество ступеней"
+    first_step_percent: "Процент для рассчёта первой ступени"
+    calculate: "Рассчитать"
+    label: "Построить ступени для депозита"
+    list_title: "Итак, length ступени для депозита amount"
+    info: "Общий расход будет составлять totalSpend. Это word чем ваш депозит."
+    step: "ступень"
+    amount:
+        bigger: "больше"
+        lower: "меньше"

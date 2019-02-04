@@ -42,3 +42,5 @@ services:
         public: true
     App\Service\SubscriptionService:
         public: true
+    App\Service\StepsCounter:
+        public: true
