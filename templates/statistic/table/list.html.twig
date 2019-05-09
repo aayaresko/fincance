@@ -1,0 +1,21 @@
+{% extends 'blank.html.twig' %}
+
+{% block body %}
+    <div class="row">
+        <table class="table table-bordered">
+            <tbody>
+                {% for row in 0..(container.numberOfRows - 1) %}
+                <tr>
+                    {% for i in 1..container.numberOfColumns %}
+                        <td {% if container.fontSize %}style="font-size: {{ container.fontSize }}px;"{% endif %}>
+                            <!-- number format 0001 -->
+                            {% set number = container.numberOfColumns * row + i %}
+                            {{ '%04d'|format(number) }}
+                        </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

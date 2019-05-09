@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Dto\StepsDto;
+use App\Dto\TableDto;
 use App\Form\StepsType;
+use App\Form\TableType;
 use App\Service\StepsCounter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -34,5 +36,26 @@ class StatisticController extends Controller
                 'totalSpend' => $service->getTotalSpend($dto)
             ]
         );
+    }
+
+    public function table(Request $request)
+    {
+        $dto = new TableDto();
+        $form = $this->createForm(TableType::class, $dto);
+
+        $form->add('build', SubmitType::class, ['label' => 'table.build']);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            return $this
+                ->render(
+                    'statistic/table/list.html.twig', ['container' => $dto]
+                );
+        }
+
+        return $this
+            ->render(
+                'statistic/table/new.html.twig', ['form' => $form->createView()]
+            );
     }
 }

@@ -10,3 +10,9 @@ steps:
     amount:
         bigger: "больше"
         lower: "меньше"
+table:
+    label: "Таблица"
+    font_size: "Размер шрифта"
+    number_of_rows: "Количество строк"
+    number_of_columns: "Количество колонок"
+    build: "Построить"
