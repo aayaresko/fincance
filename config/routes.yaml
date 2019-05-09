@@ -11,3 +11,11 @@ steps:
     methods: [GET, POST]
     requirements:
         _locale: en|ru
+
+table:
+    path: /{_locale}/statistic/table
+    controller: App\Controller\StatisticController::table
+    defaults: {_locale: en}
+    methods: [GET, POST]
+    requirements:
+        _locale: en|ru
