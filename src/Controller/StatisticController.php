@@ -7,11 +7,11 @@ use App\Dto\TableDto;
 use App\Form\StepsType;
 use App\Form\TableType;
 use App\Service\StepsCounter;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 
-class StatisticController extends Controller
+class StatisticController extends AbstractController
 {
     public function steps(Request $request)
     {

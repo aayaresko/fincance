@@ -4,17 +4,15 @@ namespace App\Controller;
 
 use App\Entity\Subscription\CurrencySubscription;
 use App\Form\CurrencySubscriptionType;
-use App\Service\SubscriptionService;
-use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @Route("/subscription")
  */
-class CurrencySubscriptionController extends Controller
+class CurrencySubscriptionController extends AbstractController
 {
     /**
      * @Route("/currency", name="subscription_currency")

@@ -7,11 +7,11 @@ use App\Form\SubscribeType;
 use App\Service\UserService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 
-class SubscribeController extends Controller
+class SubscribeController extends AbstractController
 {
     /**
      * @Route("/subscribe", name="subscribe")
