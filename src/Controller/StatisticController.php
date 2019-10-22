@@ -13,10 +13,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class StatisticController extends AbstractController
 {
-    public function steps(Request $request)
+    public function steps(Request $request, StepsCounter $service)
     {
-        /** @var StepsCounter $service */
-        $service = $this->get(StepsCounter::class);
         $dto = new StepsDto();
         $form = $this->createForm(StepsType::class, $dto);
 

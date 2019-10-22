@@ -17,7 +17,7 @@ class SubscribeController extends AbstractController
      * @Route("/subscribe", name="subscribe")
      * @Method({"GET", "POST"})
      */
-    public function new(Request $request)
+    public function new(Request $request, UserService $userService)
     {
         /**
          * @var UserService $userService
@@ -27,11 +27,13 @@ class SubscribeController extends AbstractController
 
             return $this->redirectToRoute('user_profile');
         }
-        $em          = $this->getDoctrine()->getManager();
-        $userService = $this->get(UserService::class);
-        $user        = new User();
-        $form        = $this->createForm(SubscribeType::class, $user);
+
+        $em = $this->getDoctrine()->getManager();
+        $user = new User();
+        $form = $this->createForm(SubscribeType::class, $user);
+
         $form->add('submit', SubmitType::class, ['label' => 'Subscribe']);
+
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
             if ($form->isValid()) {
