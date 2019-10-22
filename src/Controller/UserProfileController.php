@@ -5,11 +5,11 @@ namespace App\Controller;
 use App\Form\UserProfileType;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 
-class UserProfileController extends Controller
+class UserProfileController extends AbstractController
 {
     /**
      * @Route("/user/profile", name="user_profile")

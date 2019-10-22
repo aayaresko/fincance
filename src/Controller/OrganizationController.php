@@ -9,10 +9,9 @@ use App\Repository\CurrencyRepository;
 use App\Repository\OrganizationRepository;
 use App\Repository\RateRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class OrganizationController extends Controller
+class OrganizationController extends AbstractController
 {
     /**
      * @Route("/organization/currencies/{organizationId}", name="organization_currency")
