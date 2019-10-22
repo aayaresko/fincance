@@ -22,15 +22,13 @@ class DiagramController extends AbstractController
      * @Route("/rate/{currencyId}", name="diagram_rate")
      * @Method("GET")
      */
-    public function rateIndex($currencyId)
+    public function rateIndex($currencyId, ChartJsService $chartJsService)
     {
         /**
-         * @var ChartJsService $chartJsService
          * @var CurrencyRepository $currencyRepository
          * @var RateRepository $ratesRepository
          * @var OrganizationRepository $organizationRepository
          */
-        $chartJsService         = $this->get(ChartJsService::class);
         $ratesRepository        = $this->getDoctrine()->getRepository(Rate::class);
         $organizationRepository = $this->getDoctrine()->getRepository(Organization::class);
         $currencyRepository     = $this->getDoctrine()->getRepository(Currency::class);
@@ -80,15 +78,13 @@ class DiagramController extends AbstractController
     /**
      * @Route("/organization/{organizationId}/{currencyId}", name="diagram_organization")
      */
-    public function organizationIndex($organizationId, $currencyId)
+    public function organizationIndex($organizationId, $currencyId, ChartJsService $chartJsService)
     {
         /**
-         * @var ChartJsService $chartJsService
          * @var CurrencyRepository $currencyRepository
          * @var RateRepository $ratesRepository
          * @var OrganizationRepository $organizationRepository
          */
-        $chartJsService         = $this->get(ChartJsService::class);
         $ratesRepository        = $this->getDoctrine()->getRepository(Rate::class);
         $organizationRepository = $this->getDoctrine()->getRepository(Organization::class);
         $currencyRepository     = $this->getDoctrine()->getRepository(Currency::class);
